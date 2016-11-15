@@ -1,0 +1,818 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="angularjs,javascript,frontend,translation," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="止觀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="转载请注明出处 http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/
+前言最近在研究跨浏览器跨平台app方案时找到了Angular JS，他是Google出品的JS框架。我粗略地看了一下它的介绍，突然发现，这不就是我要找的东西吗？这样的好东西可千万不能埋没了，得让它发扬光大，我就以这篇文章作为开始，围绕着angularjs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AngularJS 介绍">
+<meta property="og:url" content="http://blog.dongderu.net/2012/10/19/angularjs-introduction/index.html">
+<meta property="og:site_name" content="止觀">
+<meta property="og:description" content="转载请注明出处 http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/
+前言最近在研究跨浏览器跨平台app方案时找到了Angular JS，他是Google出品的JS框架。我粗略地看了一下它的介绍，突然发现，这不就是我要找的东西吗？这样的好东西可千万不能埋没了，得让它发扬光大，我就以这篇文章作为开始，围绕着angularjs">
+<meta property="og:image" content="https://ooo.0o0.ooo/2016/09/07/57cfcfd8871a1.jpg">
+<meta property="og:image" content="https://ooo.0o0.ooo/2016/09/07/57cfcfd86f591.jpg">
+<meta property="og:image" content="https://ooo.0o0.ooo/2016/09/07/57cfcfd870296.jpg">
+<meta property="og:image" content="https://ooo.0o0.ooo/2016/09/07/57cfcfd87f11c.jpg">
+<meta property="og:image" content="https://ooo.0o0.ooo/2016/09/07/57cfcfd86e3ed.jpg">
+<meta property="og:updated_time" content="2016-11-15T08:45:08.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AngularJS 介绍">
+<meta name="twitter:description" content="转载请注明出处 http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/
+前言最近在研究跨浏览器跨平台app方案时找到了Angular JS，他是Google出品的JS框架。我粗略地看了一下它的介绍，突然发现，这不就是我要找的东西吗？这样的好东西可千万不能埋没了，得让它发扬光大，我就以这篇文章作为开始，围绕着angularjs">
+<meta name="twitter:image" content="https://ooo.0o0.ooo/2016/09/07/57cfcfd8871a1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.dongderu.net/2012/10/19/angularjs-introduction/"/>
+
+  <title> AngularJS 介绍 | 止觀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">止觀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                AngularJS 介绍
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2012-10-19T06:30:00+00:00" content="2012-10-19">
+              2012-10-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Documentation/" itemprop="url" rel="index">
+                    <span itemprop="name">Documentation</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2012/10/19/angularjs-introduction/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2012/10/19/angularjs-introduction/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>转载请注明出处 <a href="http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/">http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/</a></p>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近在研究跨浏览器跨平台app方案时找到了<a href="http://angularjs.org/" target="_blank" rel="external">Angular JS</a>，他是Google出品的JS框架。我粗略地看了一下它的介绍，突然发现，这不就是我要找的东西吗？这样的好东西可千万不能埋没了，得让它发扬光大，我就以这篇文章作为开始，围绕着angularjs的官方文档做一个系列的研究。</p>
+<p><img src="https://ooo.0o0.ooo/2016/09/07/57cfcfd8871a1.jpg" alt=""></p>
+<p>首先我们看到了它的一句广告语“HTML enhanced for web app”我对这句话的理解是“让HTML对你的web app作最给力的支撑”，看着是不是觉得很唬人？光靠HTML难道能通吃一切吗？它可没说大话哦，让我们继续看下去。</p>
+<h2 id="为什么要选择AngularJS？"><a href="#为什么要选择AngularJS？" class="headerlink" title="为什么要选择AngularJS？"></a>为什么要选择AngularJS？</h2><p>HTML是一个很好的静态解释性语言，但是当你对其添加越来越多的动态响应后，HTML语言就会变得越来越不清晰，难以维护，AngularJS可以让你对现有的HTML词汇定义进行扩展（XHTML?HTML5?)，这样一来你的app就会变得非常易读而又富有表现力，同时也能加快你的开发效率。</p>
+<h3 id="与其他JS框架的不同之处"><a href="#与其他JS框架的不同之处" class="headerlink" title="与其他JS框架的不同之处"></a>与其他JS框架的不同之处</h3><p>其他的JS框架通过将HTML, CSS, Javascript或者前2者与JS结合的内容进行抽象或者通过命令方式来操作DOM来弥补HTML的不足。不过这二者都没有解决HTML不是为了动态视图而设计的这一根本命题。</p>
+<h3 id="扩展能力"><a href="#扩展能力" class="headerlink" title="扩展能力"></a>扩展能力</h3><p>AngularJS是一套非常适合组建你自己的应用的工具集。你可以随意对其功能进行扩展或者与其他库结合使用。其中每一个功能你都可以自定义或者将其替换以满足你的开发过程和需求。你可以通过阅读文档找到该问题的答案。</p>
+<h3 id="一个简单的示例"><a href="#一个简单的示例" class="headerlink" title="一个简单的示例"></a>一个简单的示例</h3><p><img src="https://ooo.0o0.ooo/2016/09/07/57cfcfd86f591.jpg" alt=""></p>
+<p>在name文本框内输入文字竟会同时显示在下方的Label区域内。我们来看一下实现该功能的代码：</p>
+<p><em>index.html</em></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"> <span class="meta">&lt;!doctype html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">ng-app</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">label</span>&gt;</span>Name:<span class="tag">&lt;/<span class="name">label</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">ng-model</span>=<span class="string">"yourName"</span> <span class="attr">placeholder</span>=<span class="string">"Enter a name here"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">hr</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Hello &#123;&#123;yourName&#125;&#125;!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>这里我们先来做一些注释：</p>
+<blockquote>
+<p><code>ng-app</code>: 告诉AngularJS在页面上激活的位置，在本例中意味着全文件有效。</p>
+<p><code>angular.min.js</code>: 加载AngularJS<br> ng-model: 将form和model建立关系并绑定。这意味着你对该控件内的任何修改都会对model内的数据作实时更新，相对的，model内数据的变更也会改变控件的显示。</p>
+<p><code></code>: 是一种在HTML页面上制定绑定显示位置的申明方式，AngularJS会在“yourname”值变更的同时自动替换该处的文本。</p>
+</blockquote>
+<p>让我们动手试一试？<a href="http://jsfiddle.net/9QFwu/" target="_blank" rel="external">点我玩一下</a></p>
+<h2 id="添加一些控制功能"><a href="#添加一些控制功能" class="headerlink" title="添加一些控制功能"></a>添加一些控制功能</h2><p>先穿插一点背景知识和特性：</p>
+<blockquote>
+<p>Data Binding: Data-binding是一种在model数据变更时自动更新显示的一种方式，反之亦然。这个功能十分方便，因为他可以让你省去许多对DOM的操作。</p>
+<p>Controller: controller定义了DOM背后的行为。AngularJS可以让你用一种间接的高可读性，非公式化的表现方式来更新DOM，以及注册回调方法(callbacks)，或者监听model的变化。</p>
+<p>朴实的JS: 和其他JS框架不同，你无需去继承一个专门的类型，用专门的访问器包裹你的model。只需要传统的、朴素的Javascript就好了。这将是你的程序更容易测试，维护，重用，而且从公式化中得到解放。</p>
+</blockquote>
+<p><img src="https://ooo.0o0.ooo/2016/09/07/57cfcfd870296.jpg" alt=""></p>
+<p>一个经典的Todo List的实现，来看代码：</p>
+<p><em>index.html</em></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!doctype html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">ng-app</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"todo.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"todo.css"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>Todo<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"TodoCtrl"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123;remaining()&#125;&#125; of &#123;&#123;todos.length&#125;&#125; remaining<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">      [ <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">""</span> <span class="attr">ng-click</span>=<span class="string">"archive()"</span>&gt;</span>archive<span class="tag">&lt;/<span class="name">a</span>&gt;</span> ]</div><div class="line">      <span class="tag">&lt;<span class="name">ul</span> <span class="attr">class</span>=<span class="string">"unstyled"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">ng-repeat</span>=<span class="string">"todo in todos"</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">ng-model</span>=<span class="string">"todo.done"</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"done-&#123;&#123;todo.done&#125;&#125;"</span>&gt;</span>&#123;&#123;todo.text&#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">form</span> <span class="attr">ng-submit</span>=<span class="string">"addTodo()"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">ng-model</span>=<span class="string">"todoText"</span>  <span class="attr">size</span>=<span class="string">"30"</span></span></div><div class="line">               <span class="attr">placeholder</span>=<span class="string">"add new todo here"</span>&gt;</div><div class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">"btn-primary"</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"add"</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">form</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>todo.js</code>: 该文件内存放了所有控制方法。</p>
+<p><code>ng-controller</code>: 在这个元素内部的行为都将交由<code>todo.js</code>内的<code>TodoCtrl</code>类进行管理。</p>
+<p><code>ng-click</code>: 用定义的方式制定调用Controller中的行为，而不是通过注册event-handlers。在本例中点击链接后将调用archive() 方法。</p>
+<p><code>ng-repeat</code>: ng-repeat用来显示一个集合，在本例中，针对每一个在todos里的对象，AngularJS都会创建一个<code>&lt;li&gt;</code>副本。当新的对象加入到todos中时，它也会自动追加<code>&lt;li&gt;</code>项，反之亦然。这是反映AngularJS指令灵活度特性的其中之一。</p>
+<p><code>ng-submit</code>: 拦截表单提交事件，并用“addTodo()”方法取代，在该方法内会读取“todoText”属性并且将其插入到todos数组内。</p>
+</blockquote>
+<p><em>todo.js</em></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">TodoCtrl</span>(<span class="params">$scope</span>) </span>&#123;</div><div class="line">  $scope.todos = [</div><div class="line">    &#123;<span class="attr">text</span>:<span class="string">'learn angular'</span>, <span class="attr">done</span>:<span class="literal">true</span>&#125;,</div><div class="line">    &#123;<span class="attr">text</span>:<span class="string">'build an angular app'</span>, <span class="attr">done</span>:<span class="literal">false</span>&#125;];</div><div class="line"> </div><div class="line">  $scope.addTodo = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    $scope.todos.push(&#123;<span class="attr">text</span>:$scope.todoText, <span class="attr">done</span>:<span class="literal">false</span>&#125;);</div><div class="line">    $scope.todoText = <span class="string">''</span>;</div><div class="line">  &#125;;</div><div class="line"> </div><div class="line">  $scope.remaining = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> count = <span class="number">0</span>;</div><div class="line">    angular.forEach($scope.todos, <span class="function"><span class="keyword">function</span>(<span class="params">todo</span>) </span>&#123;</div><div class="line">      count += todo.done ? <span class="number">0</span> : <span class="number">1</span>;</div><div class="line">    &#125;);</div><div class="line">    <span class="keyword">return</span> count;</div><div class="line">  &#125;;</div><div class="line"> </div><div class="line">  $scope.archive = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> oldTodos = $scope.todos;</div><div class="line">    $scope.todos = [];</div><div class="line">    angular.forEach(oldTodos, <span class="function"><span class="keyword">function</span>(<span class="params">todo</span>) </span>&#123;</div><div class="line">      <span class="keyword">if</span> (!todo.done) $scope.todos.push(todo);</div><div class="line">    &#125;);</div><div class="line">  &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>TodoCtrl</code>: Controller是页面背后的控制代码，你可以清楚地看到应用的行为，因为其中没有任何Dom操作，或者框架独有的格式，只有简单的，非常易读的JS。</p>
+<p><code>$scope</code>: $scope内包含了你的model数据。它将页面和控制器粘合在了一起。$scope仅仅是能被注入到控制器的服务的其中之一。</p>
+<p><code>todos</code>: 在本例中在初始化model时创建了2个todo项，请注意你只需简单地分配你的model到$scope上，AngularJS就会自动帮你将数据显示在页面上。而这个model数据就是普通的，传统的js对象，不用费力的把它包在proxy里，或者通过特定的setter方法去访问。</p>
+<p><code>todoText</code>: 由于数据的双向绑定，model内的数据永远是最新的。这意味着我们可以简单地读取用户的输入，而不需要再去注册callbacks，事件监听器，或者使用框架提供的API。</p>
+</blockquote>
+<p><em>todo.css</em></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="selector-class">.done-true</span> &#123;</div><div class="line">  <span class="attribute">text-decoration</span>: line-through;</div><div class="line">  <span class="attribute">color</span>: grey;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>.done-true</code>: 为完成的项添加打勾的样式。</p>
+</blockquote>
+<p><a href="http://jsfiddle.net/WbRfC/" target="_blank" rel="external">再玩一下？</a></p>
+<h2 id="连接后端"><a href="#连接后端" class="headerlink" title="连接后端"></a>连接后端</h2><p>背景知识和特性:</p>
+<blockquote>
+<p>Deep Linking: 深度的链接反映了用户在app内的所在位置，当用户想要收藏当前页面或者将链接通过邮件发送出去时就显得十分有用。传统的web应用没有这个问题，但是AJAX应用天生就不支持这个功能。AngularJS将深度链接和类似桌面应用的开发的优点结合在了一起。</p>
+<p>表单验证: 客户端验证是用户体验中的重要部分。AngularJS让你无需编写任何JS代码就能制定表单的验证条件。写更少的代码，开发地更快更好。</p>
+<p>与服务端通信: AngularJS提供了建立于<a href="http://baike.baidu.com/view/1105115.htm" target="_blank" rel="external">XHR</a>之上的服务，这样戏剧化地简化了你的代码。我们封装了XHR并且提供了异常处理和成功允诺。而这个允诺进一步地简化了原先你代码内处理异步返回结果的部分。它能让同步地分配属性但是其实执行的是异步的操作。</p>
+</blockquote>
+<p><img src="https://ooo.0o0.ooo/2016/09/07/57cfcfd87f11c.jpg" alt=""></p>
+<p>SUID操作示例，来看代码:</p>
+<p><em>index.html</em></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!doctype html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">ng-app</span>=<span class="string">"project"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular-resource.min.js"</span>&gt;</span><span class="undefined"></span></div><div class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"project.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"mongolab.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>JavaScript Projects<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-view</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>ng-app=&quot;project&quot;</code>: ng-app在本页面区域内激活了project模块。这样定义意味着可以在页面内存在调用多个模块。</p>
+<p><code>angular-resource.min.js</code>: 加载AngularJS Resource模块。</p>
+<p><code>project.js</code>: 页面的Controller，其中定了了页面的行为。</p>
+<p><code>mongolab.js</code>: AngularJS将该应用与<a href="http://mongolab.com连接的模块，用来作数据持久化。" target="_blank" rel="external">http://mongolab.com连接的模块，用来作数据持久化。</a></p>
+<p>ng-view: 定义了ng-view以后，我们就可以把这个div作为一个partial页面或者模板的容器，而在它范围之外页面部分将保持静态。在这个例子中我们将使用这个容器，让它在现实列表和添加、删除表单模板之间切换。</p>
+</blockquote>
+<p><em>project.js</em></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">angular.module(<span class="string">'project'</span>, [<span class="string">'mongolab'</span>]).</div><div class="line">  config(<span class="function"><span class="keyword">function</span>(<span class="params">$routeProvider</span>) </span>&#123;</div><div class="line">    $routeProvider.</div><div class="line">      when(<span class="string">'/'</span>, &#123;<span class="attr">controller</span>:ListCtrl, <span class="attr">templateUrl</span>:<span class="string">'list.html'</span>&#125;).</div><div class="line">      when(<span class="string">'/edit/:projectId'</span>, &#123;<span class="attr">controller</span>:EditCtrl, <span class="attr">templateUrl</span>:<span class="string">'detail.html'</span>&#125;).</div><div class="line">      when(<span class="string">'/new'</span>, &#123;<span class="attr">controller</span>:CreateCtrl, <span class="attr">templateUrl</span>:<span class="string">'detail.html'</span>&#125;).</div><div class="line">      otherwise(&#123;<span class="attr">redirectTo</span>:<span class="string">'/'</span>&#125;);</div><div class="line">  &#125;);</div><div class="line"> </div><div class="line"> </div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">ListCtrl</span>(<span class="params">$scope, Project</span>) </span>&#123;</div><div class="line">  $scope.projects = Project.query();</div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">CreateCtrl</span>(<span class="params">$scope, $location, Project</span>) </span>&#123;</div><div class="line">  $scope.save = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    Project.save($scope.project, <span class="function"><span class="keyword">function</span>(<span class="params">project</span>) </span>&#123;</div><div class="line">      $location.path(<span class="string">'/edit/'</span> + project._id.$oid);</div><div class="line">    &#125;);</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"> </div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">EditCtrl</span>(<span class="params">$scope, $location, $routeParams, Project</span>) </span>&#123;</div><div class="line">  <span class="keyword">var</span> self = <span class="keyword">this</span>;</div><div class="line"> </div><div class="line">  Project.get(&#123;<span class="attr">id</span>: $routeParams.projectId&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">project</span>) </span>&#123;</div><div class="line">    self.original = project;</div><div class="line">    $scope.project = <span class="keyword">new</span> Project(self.original);</div><div class="line">  &#125;);</div><div class="line"> </div><div class="line">  $scope.isClean = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> angular.equals(self.original, $scope.project);</div><div class="line">  &#125;</div><div class="line"> </div><div class="line">  $scope.destroy = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    self.original.destroy(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      $location.path(<span class="string">'/list'</span>);</div><div class="line">    &#125;);</div><div class="line">  &#125;;</div><div class="line"> </div><div class="line">  $scope.save = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    $scope.project.update(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">      $location.path(<span class="string">'/'</span>);</div><div class="line">    &#125;);</div><div class="line">  &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>project</code>: 这样就直接定义了project模块。通过使用模块，你可以配置现有的服务，定义新的服务，指令，过滤器等等。在这里，我们将设置映射URL和部件的路由。AngularJS负责监控浏览器，一旦URL有变动将自动更新部件内容。</p>
+<p><code>mongolab</code>: 一个模块可以依赖于其他模块，这里，project依赖于mongolab以处理本应用的持久化事务。</p>
+<p><code>config</code>: 通过<code>config()</code>可以配置已存在的服务，这里，我们将配置<code>$routeProvider</code>来处理URL和部件的映射关系。</p>
+<p><code>when</code>: 当URL为<code>/</code>时，程序会在页面上加载<code>list.html</code>并关联<code>ListCtrl</code>控制器。你可以直观的通过查阅路由定义来了解该应用的结构。</p>
+<p><code>/edit/:projectId</code>: 你一定在路由定义里发现有一个<code>:</code>，你可以通过使用冒号来传参，让Controller接受，现在 <code>EditCtrl</code> 可以通过查询<code>projectId</code>属性来定位要编辑的记录了。</p>
+<p><code>otherwise</code>: 这条路由用来定义不满足所有情况时显示的内容，类似switch的default。</p>
+<p><code>Project</code>: 这是一个用来持久化以及获取数据的类。他已经在<code>mongolab.js</code>中定义，并自定注入到了controller中。他的目的是使服务器的交互抽象化，让我们腾出更多精力专注于控制行为而不是处理复杂的服务器交互。</p>
+<p><code>query</code>: 该方法会从服务器请求Project类的集合。注意尽管这是一个异步的调用，但是我们就像同步且没有回调函数的那样使用，这实在太酷了！事实上这里<code>query</code>返回的是一种叫做<code>promise</code>的东东。一旦最后从服务器得到了返回数据，兑现了 <code>promise</code>, AngularJS的数据绑定功能将自动地在任何我们使用该方法的地方更新显示。</p>
+<p><code>$location</code>: 你可以通过调用此服务读取浏览器地址。</p>
+<p><code>save</code>: 当用户点击save按钮后将调用此方法。</p>
+<p><code>path</code>: 使用此方法可以更改应用的当前URL，URL的变动也会自动地激活路由服务，解释并显示新的内容，在这里，会显示<code>/edit/</code>内容。</p>
+<p><code>$routeParams</code>: 这里我们请求AngularJS为我们注入<code>$routeParams</code>服务，通过使用它，我们可以读取在路由里定义的参数。</p>
+<p><code>projectId</code>: 这里将URL中的 projectId 读取出来。有了它可以让Controller支持deep-linking。</p>
+<p><code>original</code>: 我们先把原始的Project保存起来，以便可以发现用户是否有对其进行更改。</p>
+<p><code>isClean</code>: 检查用户是否通过表单更改了信息，我们在这里通过此功能控制是否启用save按钮。</p>
+<p><code>destroy</code>: 当用户点击了delete按钮后调用该方法。</p>
+</blockquote>
+<p><em>list.html</em></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">ng-model</span>=<span class="string">"search"</span> <span class="attr">class</span>=<span class="string">"search-query"</span> <span class="attr">placeholder</span>=<span class="string">"Search"</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">table</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">thead</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">tr</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">th</span>&gt;</span>Project<span class="tag">&lt;/<span class="name">th</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">th</span>&gt;</span>Description<span class="tag">&lt;/<span class="name">th</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">th</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#/new"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon-plus-sign"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">th</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">thead</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">tbody</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">tr</span> <span class="attr">ng-repeat</span>=<span class="string">"project in projects | filter:search | orderBy:'name'"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">td</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123;project.site&#125;&#125;"</span> <span class="attr">target</span>=<span class="string">"_blank"</span>&gt;</span>&#123;&#123;project.name&#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">td</span>&gt;</span>&#123;&#123;project.description&#125;&#125;<span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">td</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#/edit/&#123;&#123;project._id.$oid&#125;&#125;"</span>&gt;</span><span class="tag">&lt;<span class="name">i</span> <span class="attr">class</span>=<span class="string">"icon-pencil"</span>&gt;</span><span class="tag">&lt;/<span class="name">i</span>&gt;</span><span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">td</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">tbody</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>ng-model</code>: 将输入框与search属性绑定。该属性用来过滤project包含用户输入的关键字的数据。</p>
+<p><code>#/new</code>: 指向<code>/new</code>路由的链接，该路由已在<code>project.js</code>里定义。注意我们一直遵从web的准则。为一个链接注册回调实在很不象话，我们只是简单地将它指向一个新的URL。这将会自动更新浏览器的历史，激活deep-linking。但是和普通的服务器客户端两头跑的应用不同，这里的跳转时间将会立刻在浏览器上得到反馈。</p>
+<p><code>ng-repeat</code>: 通过使用它来遍历集合。在这里，为<code>projects</code>里的每一个project，AngularJS都会创建一个新的<code>&lt;tr&gt;</code>节点。</p>
+<p><code>filter</code>: 它通过调用<code>search</code>来返回在<code>projects</code>中符合条件的项。当你在搜索框里输入关键字后，<code>filter</code>将会将列表的显示范围进一步缩小以满足条件，然后<code>ng-repeat</code>会在table里添加或删除不符和条件的项目。</p>
+<p><code>orderBy</code>: 返回根据<code>name</code>排序的project列表。</p>
+<p><code>#/edit/</code>: 创建独有的编辑链接，通过在URL里内嵌project id，这样一来就可以实现deep-linking，你可以通过浏览器返回上一步，也可以通过URL调用<code>EditCtrl</code>来编辑项。</p>
+</blockquote>
+<p><em>detail.html</em></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">name</span>=<span class="string">"myForm"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"control-group"</span> <span class="attr">ng-class</span>=<span class="string">"&#123;error: myForm.name.$invalid&#125;"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">label</span>&gt;</span>Name<span class="tag">&lt;/<span class="name">label</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">ng-model</span>=<span class="string">"project.name"</span> <span class="attr">required</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">ng-show</span>=<span class="string">"myForm.name.$error.required"</span> <span class="attr">class</span>=<span class="string">"help-inline"</span>&gt;</span></div><div class="line">        Required<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"> </div><div class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"control-group"</span> <span class="attr">ng-class</span>=<span class="string">"&#123;error: myForm.site.$invalid&#125;"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">label</span>&gt;</span>Website<span class="tag">&lt;/<span class="name">label</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"url"</span> <span class="attr">name</span>=<span class="string">"site"</span> <span class="attr">ng-model</span>=<span class="string">"project.site"</span> <span class="attr">required</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">ng-show</span>=<span class="string">"myForm.site.$error.required"</span> <span class="attr">class</span>=<span class="string">"help-inline"</span>&gt;</span></div><div class="line">        Required<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">span</span> <span class="attr">ng-show</span>=<span class="string">"myForm.site.$error.url"</span> <span class="attr">class</span>=<span class="string">"help-inline"</span>&gt;</span></div><div class="line">        Not a URL<span class="tag">&lt;/<span class="name">span</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line"> </div><div class="line">  <span class="tag">&lt;<span class="name">label</span>&gt;</span>Description<span class="tag">&lt;/<span class="name">label</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">textarea</span> <span class="attr">name</span>=<span class="string">"description"</span> <span class="attr">ng-model</span>=<span class="string">"project.description"</span>&gt;</span><span class="tag">&lt;/<span class="name">textarea</span>&gt;</span></div><div class="line"> </div><div class="line">  <span class="tag">&lt;<span class="name">br</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"#/"</span> <span class="attr">class</span>=<span class="string">"btn"</span>&gt;</span>Cancel<span class="tag">&lt;/<span class="name">a</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">ng-click</span>=<span class="string">"save()"</span> <span class="attr">ng-disabled</span>=<span class="string">"isClean() || myForm.$invalid"</span></span></div><div class="line">          <span class="attr">class</span>=<span class="string">"btn btn-primary"</span>&gt;Save<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">button</span> <span class="attr">ng-click</span>=<span class="string">"destroy()"</span></span></div><div class="line">          <span class="attr">ng-show</span>=<span class="string">"project._id"</span> <span class="attr">class</span>=<span class="string">"btn btn-danger"</span>&gt;Delete<span class="tag">&lt;/<span class="name">button</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>myForm</code>: 创建一个表单并为其命名，我们将会声明验证规则并处理输入错误和控制按钮操作。</p>
+<p><code>ng-class</code>: 当<code>name</code>不正确时，为div添加一个<code>error</code>的CSS class。</p>
+<p><code>required</code>: 当输入值为空值判定为错误。</p>
+<p><code>ng-show</code>: 当myForm的name框required判定为错误时显示错误信息。</p>
+<p><code>url</code>: 该类型会自动验证输入值的格式。</p>
+<p><code>ng-disabled</code>: 当表单没有变动或者有错误时禁用’save’按钮</p>
+</blockquote>
+<p><em>mangolab.js</em></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// This is a module for cloud persistance in mongolab - https://mongolab.com</span></div><div class="line">angular.module(<span class="string">'mongolab'</span>, [<span class="string">'ngResource'</span>]).</div><div class="line">    factory(<span class="string">'Project'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">$resource</span>) </span>&#123;</div><div class="line">      <span class="keyword">var</span> Project = $resource(<span class="string">'https://api.mongolab.com/api/1/databases'</span> +</div><div class="line">          <span class="string">'/angularjs/collections/projects/:id'</span>,</div><div class="line">          &#123; <span class="attr">apiKey</span>: <span class="string">'4f847ad3e4b08a2eed5f3b54'</span> &#125;, &#123;</div><div class="line">            <span class="attr">update</span>: &#123; <span class="attr">method</span>: <span class="string">'PUT'</span> &#125;</div><div class="line">          &#125;</div><div class="line">      );</div><div class="line"> </div><div class="line">      Project.prototype.update = <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> Project.update(&#123;<span class="attr">id</span>: <span class="keyword">this</span>._id.$oid&#125;,</div><div class="line">            angular.extend(&#123;&#125;, <span class="keyword">this</span>, &#123;<span class="attr">_id</span>:<span class="literal">undefined</span>&#125;), cb);</div><div class="line">      &#125;;</div><div class="line"> </div><div class="line">      Project.prototype.destroy = <span class="function"><span class="keyword">function</span>(<span class="params">cb</span>) </span>&#123;</div><div class="line">        <span class="keyword">return</span> Project.remove(&#123;<span class="attr">id</span>: <span class="keyword">this</span>._id.$oid&#125;, cb);</div><div class="line">      &#125;;</div><div class="line"> </div><div class="line">      <span class="keyword">return</span> Project;</div><div class="line">    &#125;);</div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>ngResource</code>: AngularJS的<code>ngResource</code>模块提供了一个面向RESTFul服务的通用接口。</p>
+<p><code>factory</code>: 通过调用<code>ngResource</code>模块的该方法来定义新的服务。在这里定义的任何服务都会在你调用的任何地方被自动注入。</p>
+<p><code>Project</code>: 在这里是为了Project类定义一个服务，该类负责每个<code>project</code>的数据装载，并且带有读写数据的方法。</p>
+<p><code>$resource</code>: 该服务专门用来创建资源类。每一个资源类预定义配有<code>query()</code>，<code>get()</code>，<code>save()</code>和<code>remove()</code>方法。这些方法作为与持久化服务交互的API。此外，资源类还可以根据你的应用的需要进行扩展。</p>
+<p><code>apiKey</code>: 向<code>mangolab</code>数据存储引擎请求时必要的参数，伴随所有请求一并传入。</p>
+<p><code>update</code>: 在资源类上定义update方法，其将会使用HTTP put方法作为请求。</p>
+<p><code>prototype</code>: 这里我们将扩展资源类的方法来与持久化引擎作交互。</p>
+</blockquote>
+<h2 id="创建组件"><a href="#创建组件" class="headerlink" title="创建组件"></a>创建组件</h2><p>背景知识和特性:</p>
+<p>指令 (Directives): 指令是AngularJS独有的功能，而且他非常强大，Directive能让你在你的应用中创造独有的HTML语句。</p>
+<p>组件可重用: 使用指令的目的的其中之一是为了重用。可以将一些复杂的DOM结构，css语句，行为等封装成一个组件，从而让你腾出更多精力专注于应用的表现方式上。</p>
+<p>本地化: 本地化是一个严谨的应用其中的一个重要组成部分。Angular中的local aware filters和stemming directives提供了现成的功能模块从而使你的应用能解决大多数本地化的问题。</p>
+<p><img src="https://ooo.0o0.ooo/2016/09/07/57cfcfd86e3ed.jpg" alt=""></p>
+<p>来看代码:</p>
+<p><em>index.html</em></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;!doctype html&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">ng-app</span>=<span class="string">"components"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"components.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"beers.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">tabs</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">pane</span> <span class="attr">title</span>=<span class="string">"Localization"</span>&gt;</span></div><div class="line">        Date: &#123;&#123; '2012-04-01' | date:'fullDate' &#125;&#125; <span class="tag">&lt;<span class="name">br</span>&gt;</span></div><div class="line">        Currency: &#123;&#123; 123456 | currency &#125;&#125; <span class="tag">&lt;<span class="name">br</span>&gt;</span></div><div class="line">        Number: &#123;&#123; 98765.4321 | number &#125;&#125; <span class="tag">&lt;<span class="name">br</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">pane</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">pane</span> <span class="attr">title</span>=<span class="string">"Pluralization"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-controller</span>=<span class="string">"BeerCounter"</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">div</span> <span class="attr">ng-repeat</span>=<span class="string">"beerCount in beers"</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">ng-pluralize</span> <span class="attr">count</span>=<span class="string">"beerCount"</span> <span class="attr">when</span>=<span class="string">"beerForms"</span>&gt;</span><span class="tag">&lt;/<span class="name">ng-pluralize</span>&gt;</span></div><div class="line">          <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">pane</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">tabs</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>components</code>: 直接在此页面范围内定义了components组件，该组件包含了<code>&lt;tabs&gt;</code>和<code>&lt;pane&gt;</code>这两个HTML扩展组件。</p>
+<p><code>tabs</code>: 我们为HTML解释库添加了一个<code>tabs</code>组件，该组件将复杂的HTML标签的实现和结构抽象话，直接展现结果，这样增加了代码的可读性而且能够很方便地去重用。</p>
+<p><code>pane</code>: 我们在这里又定义了一个名为<code>pane</code>的新组件，为每个标签加载面板。</p>
+<p><code>title</code>: 自定义组件可以带参，在这里<code>title</code>表示为标签的显示抬头。</p>
+<p><code>localization</code>: 作为一个示例演示AngularJS的本地化功能，日期、数字、和汇率的格式显示。</p>
+<p><code>Pluralization</code>: 作为一个示例演示AngularJS的单复数显示功能，注意此功能会根据locale的不同产生变化。</p>
+<p><code>BeerCounter</code>: 我们使用名为<code>BeerCounter</code>的Controller来设置基于不同locale的显示规则。</p>
+<p><code>ng-pluralize</code>: 该指令会根据每个local显示正确的单复数格式。不是所有的语言都想英语那样，根据数量的不同，其他语言可能会有更复杂的复数表现形式。</p>
+<p><code>count</code>: 绑定显示的阿拉伯数字。</p>
+<p><code>when</code>: 绑定单复数的输出规则。</p>
+</blockquote>
+<p><em>components.js</em></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line">angular.module(<span class="string">'components'</span>, []).</div><div class="line">  directive(<span class="string">'tabs'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      <span class="attr">restrict</span>: <span class="string">'E'</span>,</div><div class="line">      <span class="attr">transclude</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">scope</span>: &#123;&#125;,</div><div class="line">      <span class="attr">controller</span>: <span class="function"><span class="keyword">function</span>(<span class="params">$scope, $element</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> panes = $scope.panes = [];</div><div class="line"> </div><div class="line">        $scope.select = <span class="function"><span class="keyword">function</span>(<span class="params">pane</span>) </span>&#123;</div><div class="line">          angular.forEach(panes, <span class="function"><span class="keyword">function</span>(<span class="params">pane</span>) </span>&#123;</div><div class="line">            pane.selected = <span class="literal">false</span>;</div><div class="line">          &#125;);</div><div class="line">          pane.selected = <span class="literal">true</span>;</div><div class="line">        &#125;</div><div class="line"> </div><div class="line">        <span class="keyword">this</span>.addPane = <span class="function"><span class="keyword">function</span>(<span class="params">pane</span>) </span>&#123;</div><div class="line">          <span class="keyword">if</span> (panes.length == <span class="number">0</span>) $scope.select(pane);</div><div class="line">          panes.push(pane);</div><div class="line">        &#125;</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">template</span>:</div><div class="line">        <span class="string">'&lt;div class="tabbable"&gt;'</span> +</div><div class="line">          <span class="string">'&lt;ul class="nav nav-tabs"&gt;'</span> +</div><div class="line">            <span class="string">'&lt;li ng-repeat="pane in panes" ng-class="&#123;active:pane.selected&#125;"&gt;'</span>+</div><div class="line">              <span class="string">'&lt;a href="" ng-click="select(pane)"&gt;&#123;&#123;pane.title&#125;&#125;&lt;/a&gt;'</span> +</div><div class="line">            <span class="string">'&lt;/li&gt;'</span> +</div><div class="line">          <span class="string">'&lt;/ul&gt;'</span> +</div><div class="line">          <span class="string">'&lt;div class="tab-content" ng-transclude&gt;&lt;/div&gt;'</span> +</div><div class="line">        <span class="string">'&lt;/div&gt;'</span>,</div><div class="line">      <span class="attr">replace</span>: <span class="literal">true</span></div><div class="line">    &#125;;</div><div class="line">  &#125;).</div><div class="line">  directive(<span class="string">'pane'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">      <span class="attr">require</span>: <span class="string">'^tabs'</span>,</div><div class="line">      <span class="attr">restrict</span>: <span class="string">'E'</span>,</div><div class="line">      <span class="attr">transclude</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">scope</span>: &#123; <span class="attr">title</span>: <span class="string">'@'</span> &#125;,</div><div class="line">      <span class="attr">link</span>: <span class="function"><span class="keyword">function</span>(<span class="params">scope, element, attrs, tabsCtrl</span>) </span>&#123;</div><div class="line">        tabsCtrl.addPane(scope);</div><div class="line">      &#125;,</div><div class="line">      <span class="attr">template</span>:</div><div class="line">        <span class="string">'&lt;div class="tab-pane" ng-class="&#123;active: selected&#125;" ng-transclude&gt;'</span> +</div><div class="line">        <span class="string">'&lt;/div&gt;'</span>,</div><div class="line">      <span class="attr">replace</span>: <span class="literal">true</span></div><div class="line">    &#125;;</div><div class="line">  &#125;)</div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>directive</code>: 通过调用该方法来定义新的HTML语义扩展。</p>
+<p><code>tabs</code>: 定义了<code>tabs</code>扩展。</p>
+<p><code>restrict</code>: 他规定了HTML组件的格式，在这里<code>&lt;tabs&gt;</code>必须是一个HTML元素。</p>
+<p><code>transclude</code>: 定义了AngularJS进行自定义组件的转义后，原先定义的内容显示的位置，要实现这点还要结合<code>ng-transclude</code>指令（见下文）。</p>
+<p><code>scope</code>: 我们定义的组件需要有一个私有的边界以保证其内部的显示内容不被外界不小心更改。如果你确实需要这么做，你可以定义input/output属性，可参考下文中的<code>&lt;pane&gt;</code>组件用法。</p>
+<p><code>controller</code>: 就像整体应用一样，组件同样也可以指定一个controller，来负责解释该组件的行为。</p>
+<p><code>$scope</code>: 当前组件的边界。</p>
+<p><code>$element</code>: 当前组件的DOM元素。</p>
+<p><code>select</code>: 发布一个名为<code>select</code>的方法来负责转换标签时的显示。</p>
+<p><code>addPane</code>: 通常组件需要相互协作来达到一个整体效果，在这个例子里，<code>pane</code>组件会通过<code>addPane</code>方法来讲自己注册到<code>&lt;tabs&gt;</code>容器中。</p>
+<p><code>template</code>: 顾名思义，他就是用来存放替换自定义组件的HTML代码存放点。注意，里面也同样可以包含其他的指令。</p>
+<p><code>active</code>: 我们通过设置<code>active</code>这么一个CSS样式来实现激活标签的效果。</p>
+<p><code>ng-click</code>: 通过点击选中标签。</p>
+<p><code>ng-transclude</code>: 标记原有<code>&lt;tabs&gt;</code>元素存放的位置。</p>
+<p><code>replace</code>: 告诉AngularJS替换原有的<code>&lt;tabs&gt;</code>元素，而不是在它后面追加<code>template</code>里的内容。</p>
+<p><code>require</code>: 指定了<code>&lt;pane&gt;</code>组件必须包含在<code>&lt;tabs&gt;</code>组件内。这样也同样可以让<code>&lt;pane&gt;</code>组件访问<code>&lt;tabs&gt;</code>组件的controller的方法，在这里，就是<code>addPane</code>这个方法了。</p>
+<p><code>tabsCtrl</code>: 我们已经通过定义<code>require</code>在指定<code>&lt;tabs&gt;</code>作为容器，我们就可以只用它的controller示例了。</p>
+</blockquote>
+<p><em>beers.js</em></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">BeerCounter</span>(<span class="params">$scope, $locale</span>) </span>&#123;</div><div class="line">  $scope.beers = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];</div><div class="line">  <span class="keyword">if</span> ($locale.id == <span class="string">'en-us'</span>) &#123;</div><div class="line">    $scope.beerForms = &#123;</div><div class="line">      <span class="number">0</span>: <span class="string">'no beers'</span>,</div><div class="line">      <span class="attr">one</span>: <span class="string">'&#123;&#125; beer'</span>,</div><div class="line">      <span class="attr">other</span>: <span class="string">'&#123;&#125; beers'</span></div><div class="line">    &#125;;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;</div><div class="line">    $scope.beerForms = &#123;</div><div class="line">      <span class="number">0</span>: <span class="string">'žiadne pivo'</span>,</div><div class="line">      <span class="attr">one</span>: <span class="string">'&#123;&#125; pivo'</span>,</div><div class="line">      <span class="attr">few</span>: <span class="string">'&#123;&#125; pivá'</span>,</div><div class="line">      <span class="attr">other</span>: <span class="string">'&#123;&#125; pív'</span></div><div class="line">    &#125;;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注释：</p>
+<blockquote>
+<p><code>$locale</code>: 该服务包含了当前locale的元数据。AngularJS有很多locale模块对应各种不同语言的locale。</p>
+<p><code>beers</code>: 设置beers的计数数组。我们将迭代这个数组来得到每项的值。</p>
+<p><code>id</code>: 为每个不同的locale建立不同的复数形式。在实际项目中，除了要加载locale以外，还要处理翻译的问题。</p>
+<p><code>beerForms</code>: 基于英语的复数形式。</p>
+</blockquote>
+<h2 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h2><p>好了终于把欠的债补完了，本文是根据<a href="http://angularjs.org/" target="_blank" rel="external">AngualarJS 官网</a>首页的示例逐条翻译的，可以进行参考对照。如果你有兴趣了解更多，官网上有详细的文档，视频，和示例。详细你一定能收获到不少东西的。另外，由于个人能力有限，如果有错误，敬请包含，欢迎留言指出问题所在，我会及时进行修改的。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/angularjs/" rel="tag">#angularjs</a>
+          
+            <a href="/tags/javascript/" rel="tag">#javascript</a>
+          
+            <a href="/tags/frontend/" rel="tag">#frontend</a>
+          
+            <a href="/tags/translation/" rel="tag">#translation</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2012/10/18/useful-sites-recently/" rel="next" title="最近收集的一些有用的网站">
+                <i class="fa fa-chevron-left"></i> 最近收集的一些有用的网站
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2013/05/22/2013-5-22-CQRS-Introduction/" rel="prev" title="CQRS介绍">
+                CQRS介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2012/10/19/angularjs-introduction/"
+           data-title="AngularJS 介绍" data-url="http://blog.dongderu.net/2012/10/19/angularjs-introduction/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Fermin Yang" />
+          <p class="site-author-name" itemprop="name">Fermin Yang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要选择AngularJS？"><span class="nav-number">2.</span> <span class="nav-text">为什么要选择AngularJS？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#与其他JS框架的不同之处"><span class="nav-number">2.1.</span> <span class="nav-text">与其他JS框架的不同之处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展能力"><span class="nav-number">2.2.</span> <span class="nav-text">扩展能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个简单的示例"><span class="nav-number">2.3.</span> <span class="nav-text">一个简单的示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#添加一些控制功能"><span class="nav-number">3.</span> <span class="nav-text">添加一些控制功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#连接后端"><span class="nav-number">4.</span> <span class="nav-text">连接后端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建组件"><span class="nav-number">5.</span> <span class="nav-text">创建组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结尾"><span class="nav-number">6.</span> <span class="nav-text">结尾</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fermin Yang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ferminyang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

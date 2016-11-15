@@ -1,0 +1,669 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="nodejs,sailsjs,waterline,orm,transactionsql," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="止觀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Github地址https://github.com/postmanlabs/sails-mysql-transactions
+##介绍sails-mysql-transaction是一个Sails.js与MySQL连接的ORM适配器，支持事务和集群复制。这个适配器基本上包含了流行的sails-mysql适配器，并提供额外的API来执行围绕数据库事务的操作。 它还提供以负载均衡的方式从一组只读副本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于SailsJS与Mysql的ORM事务操作以及数据复制">
+<meta property="og:url" content="http://blog.dongderu.net/2016/01/07/2016-1-7-sails-mysql-transactions/index.html">
+<meta property="og:site_name" content="止觀">
+<meta property="og:description" content="Github地址https://github.com/postmanlabs/sails-mysql-transactions
+##介绍sails-mysql-transaction是一个Sails.js与MySQL连接的ORM适配器，支持事务和集群复制。这个适配器基本上包含了流行的sails-mysql适配器，并提供额外的API来执行围绕数据库事务的操作。 它还提供以负载均衡的方式从一组只读副本">
+<meta property="og:updated_time" content="2016-11-15T08:45:08.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于SailsJS与Mysql的ORM事务操作以及数据复制">
+<meta name="twitter:description" content="Github地址https://github.com/postmanlabs/sails-mysql-transactions
+##介绍sails-mysql-transaction是一个Sails.js与MySQL连接的ORM适配器，支持事务和集群复制。这个适配器基本上包含了流行的sails-mysql适配器，并提供额外的API来执行围绕数据库事务的操作。 它还提供以负载均衡的方式从一组只读副本">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.dongderu.net/2016/01/07/2016-1-7-sails-mysql-transactions/"/>
+
+  <title> 基于SailsJS与Mysql的ORM事务操作以及数据复制 | 止觀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">止觀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                基于SailsJS与Mysql的ORM事务操作以及数据复制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-01-07T05:02:00+00:00" content="2016-01-07">
+              2016-01-07
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Documentation/" itemprop="url" rel="index">
+                    <span itemprop="name">Documentation</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/01/07/2016-1-7-sails-mysql-transactions/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/01/07/2016-1-7-sails-mysql-transactions/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Github地址"><a href="#Github地址" class="headerlink" title="Github地址"></a>Github地址</h2><p><a href="">https://github.com/postmanlabs/sails-mysql-transactions</a></p>
+<p>##介绍<br><code>sails-mysql-transaction</code>是一个Sails.js与MySQL连接的ORM适配器，支持事务和集群复制。这个适配器基本上包含了流行的sails-mysql适配器，并提供额外的API来执行围绕数据库事务的操作。 它还提供以负载均衡的方式从一组只读副本中读取数据。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ol>
+<li>在你的项目中的package.json文件中添加<code>sails-mysql-transactions</code>。不要在没有包含或安装sails的情况下直接执行install。</li>
+<li>如已经安装了<code>sails-mysql</code>，那它可能会干扰这个组件。将其从package.json中移除然后执行<code>npm remove sails-mysql</code>进行卸载。</li>
+<li>这个组件只有在sails已安装的前提下才可成功安装。如果此组件已正确安装，执行<code>npm install sails-mysql-transactions --save</code>或直接运行<code>npm install</code>，组件将会自动执行安装过程。</li>
+</ol>
+<h2 id="使用postinstall-script进行安全安装"><a href="#使用postinstall-script进行安全安装" class="headerlink" title="使用postinstall script进行安全安装"></a>使用postinstall script进行安全安装</h2><p>如果遇到<code>npm install</code>时由于安装顺序不稳定而导致问题，你可以将一下内容加入到<code>package.json</code>文件中，作为<a href="https://docs.npmjs.com/misc/scripts" target="_blank" rel="external">postinstall script of npm</a>。这将确保此组件在sails已安装的前提下被安装。需要注意的是，你并不需要将<code>sails-mysql-transactions</code>作为一个依赖进行添加你的<code>package.json</code>文件中。<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="attr">"scripts"</span>: &#123;</div><div class="line">    <span class="attr">"postinstall"</span>: <span class="string">"npm install sails-mysql-transactions"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="安装备注："><a href="#安装备注：" class="headerlink" title="安装备注："></a>安装备注：</h3><p>此包将会重写sails内置的由Postman维护的waterline组件。所以如果你需要重新安装或更新sails时，本适配器也需要重装。</p>
+<h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><p>一个Sails的集成测试应用在本项目的<code>tests/integration/app</code>目录下，里面包含完整功能，只需要执行在<code>test/integration/app</code>目录下执行<code>npm install</code>即可。</p>
+<h2 id="Sails-config-local-js"><a href="#Sails-config-local-js" class="headerlink" title="Sails config/local.js"></a>Sails config/local.js</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="comment">/* your other config stay as is */</span></div><div class="line"></div><div class="line">  connections: &#123;</div><div class="line">    <span class="attr">mySQLT</span>: &#123;</div><div class="line">      <span class="attr">adapter</span>: <span class="string">'sails-mysql-transactions'</span>,</div><div class="line">      <span class="attr">host</span>: <span class="string">'&#123;&#123;your-db-host&#125;&#125;'</span>,</div><div class="line">      <span class="attr">user</span>: <span class="string">'&#123;&#123;your-db-username&#125;&#125;'</span>,</div><div class="line">      <span class="attr">password</span>: <span class="string">'&#123;&#123;your-db-password&#125;&#125;'</span>,</div><div class="line">      <span class="attr">database</span>: <span class="string">'&#123;&#123;your-db-tablename&#125;&#125;'</span>,</div><div class="line"></div><div class="line">      <span class="attr">transactionConnectionLimit</span>: <span class="number">10</span>,</div><div class="line">      <span class="attr">rollbackTransactionOnError</span>: <span class="literal">true</span>,</div><div class="line">      <span class="attr">queryCaseSensitive</span>: <span class="literal">false</span>,</div><div class="line"></div><div class="line">      <span class="comment">/* this section is needed only if replication feature is required */</span></div><div class="line">      replication: &#123;</div><div class="line">        <span class="attr">enabled</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">inheritMaster</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">canRetry</span>: <span class="literal">true</span>,</div><div class="line">        <span class="attr">removeNodeErrorCount</span>: <span class="number">5</span>,</div><div class="line">        <span class="attr">restoreNodeTimeout</span>: <span class="number">1000</span> * <span class="number">60</span> * <span class="number">5</span>,</div><div class="line">        <span class="attr">defaultSelector</span>: <span class="string">'RR'</span>, <span class="comment">// 'RANDOM' or 'ORDER'</span></div><div class="line">        sources: &#123; </div><div class="line">          <span class="attr">readonly</span>: &#123;</div><div class="line">            <span class="attr">enabled</span>: <span class="literal">true</span>,</div><div class="line">            <span class="attr">host</span>: <span class="string">'&#123;&#123;replica-1-host&#125;&#125;'</span>,</div><div class="line">            <span class="attr">user</span>: <span class="string">'&#123;&#123;replica-1-user&#125;&#125;'</span>,</div><div class="line">            <span class="attr">password</span>: <span class="string">'&#123;&#123;replica-1-password&#125;&#125;'</span></div><div class="line">          &#125;</div><div class="line">        &#125;</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="attr">models</span>: &#123;</div><div class="line">    <span class="attr">connection</span>: <span class="string">'mySQLT'</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="在Controller中使用事务"><a href="#在Controller中使用事务" class="headerlink" title="在Controller中使用事务"></a>在Controller中使用事务</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Transaction = <span class="built_in">require</span>(<span class="string">'sails-mysql-transactions'</span>).Transaction;</div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="attr">create</span>: <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</div><div class="line">    <span class="comment">// start a new transaction</span></div><div class="line">    Transaction.start(<span class="function"><span class="keyword">function</span> (<span class="params">err, transaction</span>) </span>&#123;</div><div class="line">      <span class="keyword">if</span> (err) &#123;</div><div class="line">        <span class="comment">// the first error might even fail to return a transaction object, so double-check.</span></div><div class="line">        transaction &amp;&amp; transaction.rollback();</div><div class="line">        <span class="keyword">return</span> res.serverError(err);</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      OneModel.transact(transaction).create(req.params.all(), <span class="function"><span class="keyword">function</span> (<span class="params">err, modelInstance</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (err) &#123;</div><div class="line">          transaction.rollback();</div><div class="line">          <span class="keyword">return</span> res.serverError(err);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// using transaction to update another model and using the promises architecture</span></div><div class="line">        AnotherModel.transact(transaction).findOne(req.param(<span class="string">'id'</span>)).exec(<span class="function"><span class="keyword">function</span> (<span class="params">err, anotherInstance</span>) </span>&#123;</div><div class="line">          <span class="keyword">if</span> (err) &#123;</div><div class="line">            transaction.rollback();</div><div class="line">            <span class="keyword">return</span> res.serverError(err);</div><div class="line">          &#125;</div><div class="line"></div><div class="line">          <span class="comment">// using update and association changes</span></div><div class="line">          modelInstance.someAssociatedModel.remove(req.param(<span class="string">'remove_id'</span>));</div><div class="line"></div><div class="line">          <span class="comment">// standard .save() works when in transaction</span></div><div class="line">          modelInstance.save(<span class="function"><span class="keyword">function</span> (<span class="params">err, savedModel</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (err) &#123;</div><div class="line">              transaction.rollback();</div><div class="line">              <span class="keyword">return</span> res.serverError(err);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// finally commit the transaction before sending response</span></div><div class="line">            transaction.commit();</div><div class="line">            <span class="keyword">return</span> res.json(&#123;</div><div class="line">              <span class="attr">one</span>: savedModel,</div><div class="line">              <span class="attr">another</span>: anotherInstance</div><div class="line">            &#125;);</div><div class="line">          &#125;);</div><div class="line">        &#125;);</div><div class="line">      &#125;);</div><div class="line">    &#125;);</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h3 id="可用的事物操作列表："><a href="#可用的事物操作列表：" class="headerlink" title="可用的事物操作列表："></a>可用的事物操作列表：</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">route = <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</div><div class="line">  Transaction.start(<span class="function"><span class="keyword">function</span> (<span class="params">err, transaction</span>) </span>&#123;</div><div class="line">    OneModel.transact(transaction).create(<span class="comment">/* ... */</span>);</div><div class="line">    OneModel.transact(transaction).update(<span class="comment">/* ... */</span>);</div><div class="line">    OneModel.transact(transaction).find(<span class="comment">/* ... */</span>);</div><div class="line">    OneModel.transact(transaction).findOrCreate(<span class="comment">/* ... */</span>);</div><div class="line">    OneModel.transact(transaction).findOne(<span class="comment">/* ... */</span>);</div><div class="line">    OneModel.transact(transaction).destroy(<span class="comment">/* ... */</span>);</div><div class="line">    OneModel.transact(transaction).count(<span class="comment">/* ... */</span>);</div><div class="line">  &#125;);</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>除此之外，还有事务中实例方法上的更新，保存和关联操作，只要他们来自同一事务或通过事务进行包装（<code>transaction.wrap(instance)</code>）。</p>
+<h2 id="事务错误异常处理"><a href="#事务错误异常处理" class="headerlink" title="事务错误异常处理"></a>事务错误异常处理</h2><p>如果您正在对来源于<code>.populate</code>的实例执行模型实例操作（例如<code>save</code>，<code>destroy</code>等），事务可能会失败。在这种情况下，在对实例进行操作之前执行<code>transaction.wrap(instance)</code>会修正此问题。<br>如果要选择性地拦截来自此模块的错误，请使用<code>Transaction.AdapterError</code>进行前后效果。<br>需要注意的是，此适配器会自动添加一个名为<code>transactionId</code>的列。 如果不想在特定模型上使用事务，则可以通过在模型中设置<code>autoTK：false</code>来禁用针对该实例的自动列创建。</p>
+<h2 id="支持只读副本"><a href="#支持只读副本" class="headerlink" title="支持只读副本"></a>支持只读副本</h2><p>当提供一个或多个只读副本源时，可以使用以下API来访问来某一个自定义复制源的数据。这会将您的数据库工作负载分布在多个系统上。<br>Readonly模式仍然使用正常的非事务性连接集而不使用只读副本。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">action = <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</div><div class="line">  OneModel.readonly().find();</div><div class="line">  OneModel.readonly().findOne();</div><div class="line">  OneModel.readonly().count();</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="支持在执行更新操作时获取变化内容"><a href="#支持在执行更新操作时获取变化内容" class="headerlink" title="支持在执行更新操作时获取变化内容"></a>支持在执行更新操作时获取变化内容</h2><p>由于<code>sails-mysql</code>会在每次执行Update前进行SELECT查询，该查询可以用来比对数据更新前后的变化。<code>.update</code>的第三个参数返回一个数组，该数组的对象只包含已更改的字段及其原始值。</p>
+<h2 id="其他配置和功能"><a href="#其他配置和功能" class="headerlink" title="其他配置和功能"></a>其他配置和功能</h2><ol>
+<li>当<code>queryCaseSensitive</code>设置为true时，会将waterline的大小写敏感度功能禁用。（标注：这是waterline-sequel的wlNext选项的功能）</li>
+<li>内置的waterline还提供了以下功能：<ul>
+<li><code>Model.&lt;function:operate&gt;().populateSome(Object&lt;association:criteria&gt;);</code>允许你在一次调用中得到多个关联数据的内容，它的参数也接受数组形式。</li>
+<li>Model的<code>.populate</code>方法允许以<code>select: []</code>形式作为查询参数之一。</li>
+<li>Model的删除操作并不会在删除过程中先获取一遍完整数据模型。</li>
+</ul>
+</li>
+<li>另外提供了一个可以新建基于模型属性实例的异步方法<code>fromObject()</code>。<ul>
+<li>此方法允许将一个包含属性的对象或者回调函数作为参数。</li>
+<li>回调函数会返回错误对象以及模型实例对象。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">OneModel.fromObject(attributesObject, <span class="function"><span class="keyword">function</span> (<span class="params">err, instance</span>) </span>&#123;</div><div class="line">    <span class="keyword">if</span> (err) &#123; <span class="keyword">return</span> <span class="built_in">Error</span>; &#125;</div><div class="line"></div><div class="line">    <span class="comment">// instance is the required object</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<h2 id="贡献"><a href="#贡献" class="headerlink" title="贡献"></a>贡献</h2><p>你可以通过发起经过Travis CI测试通过的Pull请求来贡献你的代码。你需要使用<code>npm install -d</code>来安装本项目，并且在本地执行<code>npm test</code>，然后再发起Pull请求。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nodejs/" rel="tag">#nodejs</a>
+          
+            <a href="/tags/sailsjs/" rel="tag">#sailsjs</a>
+          
+            <a href="/tags/waterline/" rel="tag">#waterline</a>
+          
+            <a href="/tags/orm/" rel="tag">#orm</a>
+          
+            <a href="/tags/transactionsql/" rel="tag">#transactionsql</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/11/what-is-webpack/" rel="next" title="Webpack介绍">
+                <i class="fa fa-chevron-left"></i> Webpack介绍
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/06/2016-9-6-hello-world/" rel="prev" title="Hexo + Docker + Git + FlowCI + Github Pages">
+                Hexo + Docker + Git + FlowCI + Github Pages <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/01/07/2016-1-7-sails-mysql-transactions/"
+           data-title="基于SailsJS与Mysql的ORM事务操作以及数据复制" data-url="http://blog.dongderu.net/2016/01/07/2016-1-7-sails-mysql-transactions/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Fermin Yang" />
+          <p class="site-author-name" itemprop="name">Fermin Yang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Github地址"><span class="nav-number">1.</span> <span class="nav-text">Github地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用postinstall-script进行安全安装"><span class="nav-number">3.</span> <span class="nav-text">使用postinstall script进行安全安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装备注："><span class="nav-number">3.1.</span> <span class="nav-text">安装备注：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#快速开始"><span class="nav-number">4.</span> <span class="nav-text">快速开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sails-config-local-js"><span class="nav-number">5.</span> <span class="nav-text">Sails config/local.js</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在Controller中使用事务"><span class="nav-number">6.</span> <span class="nav-text">在Controller中使用事务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可用的事物操作列表："><span class="nav-number">6.1.</span> <span class="nav-text">可用的事物操作列表：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务错误异常处理"><span class="nav-number">7.</span> <span class="nav-text">事务错误异常处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持只读副本"><span class="nav-number">8.</span> <span class="nav-text">支持只读副本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#支持在执行更新操作时获取变化内容"><span class="nav-number">9.</span> <span class="nav-text">支持在执行更新操作时获取变化内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他配置和功能"><span class="nav-number">10.</span> <span class="nav-text">其他配置和功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#贡献"><span class="nav-number">11.</span> <span class="nav-text">贡献</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fermin Yang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ferminyang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,669 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="nodejs," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="止觀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="转载自：http://www.infoq.com/cn/articles/node.js-habits从问世到现在将近20年，JavaScript一直缺乏其它有吸引力的编程语言，比如Python和Ruby，的很多优点：命令行界面，REPL，包管理器，以及组织良好的开源社区。感谢Node.js和npm，现如今的JavaScript鸟枪换炮了。Web开发者有了强大的新工具，接下来就看他们的想象力了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快乐Node码农的十个习惯">
+<meta property="og:url" content="http://blog.dongderu.net/2014/04/23/2014-4-23-nodejs-habits/index.html">
+<meta property="og:site_name" content="止觀">
+<meta property="og:description" content="转载自：http://www.infoq.com/cn/articles/node.js-habits从问世到现在将近20年，JavaScript一直缺乏其它有吸引力的编程语言，比如Python和Ruby，的很多优点：命令行界面，REPL，包管理器，以及组织良好的开源社区。感谢Node.js和npm，现如今的JavaScript鸟枪换炮了。Web开发者有了强大的新工具，接下来就看他们的想象力了。">
+<meta property="og:updated_time" content="2016-11-15T08:45:08.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="快乐Node码农的十个习惯">
+<meta name="twitter:description" content="转载自：http://www.infoq.com/cn/articles/node.js-habits从问世到现在将近20年，JavaScript一直缺乏其它有吸引力的编程语言，比如Python和Ruby，的很多优点：命令行界面，REPL，包管理器，以及组织良好的开源社区。感谢Node.js和npm，现如今的JavaScript鸟枪换炮了。Web开发者有了强大的新工具，接下来就看他们的想象力了。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.dongderu.net/2014/04/23/2014-4-23-nodejs-habits/"/>
+
+  <title> 快乐Node码农的十个习惯 | 止觀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">止觀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                快乐Node码农的十个习惯
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-04-23T06:26:00+00:00" content="2014-04-23">
+              2014-04-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Practice/" itemprop="url" rel="index">
+                    <span itemprop="name">Practice</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/04/23/2014-4-23-nodejs-habits/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/04/23/2014-4-23-nodejs-habits/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>转载自：<a href="http://www.infoq.com/cn/articles/node.js-habits" target="_blank" rel="external">http://www.infoq.com/cn/articles/node.js-habits</a><br>从问世到现在将近20年，JavaScript一直缺乏其它有吸引力的编程语言，比如Python和Ruby，的很多优点：命令行界面，REPL，包管理器，以及组织良好的开源社区。感谢Node.js和npm，现如今的JavaScript鸟枪换炮了。Web开发者有了强大的新工具，接下来就看他们的想象力了。</p>
+<p>下面这个提示和技巧清单，能让你和你的node程序保持快乐。</p>
+<h2 id="用npm-init开始新项目"><a href="#用npm-init开始新项目" class="headerlink" title="用npm init开始新项目"></a>用npm init开始新项目</h2><p>npm有个init命令，可以引导你完成创建package.json文件的过程。即便你非常熟悉package.json和它的属性，也可以把npm init当作将你的新程序或模块导入正轨的简便办法。 它可以聪明地为你设置默认值，比如通过上层目录的名称推断模块名，从~/.npmrc中读取创作者的信息，以及用你的git设置确定代码库。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">mkdir my-node-app</div><div class="line"><span class="built_in">cd</span> my-node-app</div><div class="line">npm init</div></pre></td></tr></table></figure>
+<h2 id="声明所有依赖项"><a href="#声明所有依赖项" class="headerlink" title="声明所有依赖项"></a>声明所有依赖项</h2><p>在将模块安装到项目本地时坚持使用–save (或 –save-dev)是个好习惯。这些选项会将指定的模块添加到package.json的dependencies（或devDependencies）清单中，并使用合理的默认<a href="https://github.com/isaacs/node-semver#ranges" target="_blank" rel="external">semver范围</a>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install domready --save</div></pre></td></tr></table></figure>
+<p>注意，现在npm使用<a href="http://fredkschott.com/post/2014/02/npm-no-longer-defaults-to-tildes/" target="_blank" rel="external">插入符风格的semver范围</a>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="string">"dependencies"</span>: &#123;</div><div class="line">  <span class="string">"domready"</span>: <span class="string">"^1.0.4"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="指定启动脚本"><a href="#指定启动脚本" class="headerlink" title="指定启动脚本"></a>指定启动脚本</h2><p>在package.json中设定scripts.start，你就可以在命令行中用npm start启动程序了。这个非常方便，因为克隆了你的程序的其他node开发人员不用猜就能轻松运行它。</p>
+<p>额外奖励：如果在package.json中定义了scripts.start，你就<strong>不需要Procfile了</strong>(Heroku平台用Procfile来声明在你程序的dynos上运行什么命令)。使用npm start会自动创建一个作为<a href="https://github.com/heroku/heroku-buildpack-nodejs/blob/97a5856d3d4407e9fde82bac31cb308430e459f7/bin/compile#L122-L135" target="_blank" rel="external">web进程</a>的Procfile。</p>
+<p>这里有个启动脚本示例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="string">"scripts"</span>: &#123;</div><div class="line">  <span class="string">"start"</span>: <span class="string">"node index.js"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="指定测试脚本"><a href="#指定测试脚本" class="headerlink" title="指定测试脚本"></a>指定测试脚本</h2><p>就像团队中的所有人都应该可以运行程序一样，他们也应该可以测试它。package.json中的scripts.test就是用来指定运行测试套件的脚本的。如果你用mocha之类的东西运行测试，一定要确保把它包含在package.json里的devDependencies中，并且指向安装在你项目本地的文件，而不是全局安装的mocha：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="string">"scripts"</span>: &#123;</div><div class="line">  <span class="string">"test"</span>: <span class="string">"mocha"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="不要把依赖项放在源码的版本控制中"><a href="#不要把依赖项放在源码的版本控制中" class="headerlink" title="不要把依赖项放在源码的版本控制中"></a>不要把依赖项放在源码的版本控制中</h2><p>很多node程序使用的npm模块带有C语言写的依赖项，比如bson、ws和hiredis，这些依赖项必须在Heroku的64位Linux架构下进行编译。编译过程可能非常耗时。为了让构建过程尽可能的快，Heroku的node buildpack在下载和编译完依赖项后会<a href="https://github.com/heroku/heroku-buildpack-nodejs/blob/a096187082363bdee6a34dd8ddb90344601649ad/bin/compile#L58-76" target="_blank" rel="external">缓存它们</a>，以便在后续部署中重用。这个缓存是为了降低网络流量并减少编译次数。</p>
+<p>忽略node_modules目录也是模块创作者推荐的npm实践。应用程序和模块之间少了一个区别！</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">echo</span> node_modules &gt;&gt; .gitignore</div></pre></td></tr></table></figure>
+<h2 id="用环境变量配置npm"><a href="#用环境变量配置npm" class="headerlink" title="用环境变量配置npm"></a>用环境变量配置npm</h2><p>以下内容摘自<a href="https://npmjs.org/doc/misc/npm-config.html" target="_blank" rel="external">npm配置</a>：</p>
+<blockquote>
+<p>所有以npm<em>config</em>开头的环境变量都会被解释为配置参数。比如说环境中有npm_config_foo=bar时，会将配置参数foo设置为bar。任何没有给出值的环境配置的值都会设置为true。配置值对大小写不敏感，所以NPM_CONFIG_FOO=bar也一样。</p>
+</blockquote>
+<p>最近在所有的Heroku构建中都有程序的环境。这一变化让Heroku上的node用户无需修改程序代码就可以控制他们的npm配置。习惯#7是这一方式的完美例证。</p>
+<h2 id="带着你自己的npm注册中心"><a href="#带着你自己的npm注册中心" class="headerlink" title="带着你自己的npm注册中心"></a>带着你自己的npm注册中心</h2><p>最近几年公共npm注册中心出现了<a href="http://modulecounts.com/" target="_blank" rel="external">突飞猛进式的增长</a>，因此会偶尔不稳定。所以很多node用户开始寻求公共注册中心之外的方案，他们或者是出于开发和构建过程中速度及稳定性方面的考虑，或者是因为要放置私有的node模块。</p>
+<p>最近几个月冒出了一些可供选择的npm注册中心。<a href="http://blog.nodejitsu.com/using-private-npm-on-heroku/" target="_blank" rel="external">Nodejitsu</a>和<a href="https://addons.heroku.com/gemfury#hello" target="_blank" rel="external">Gemfury</a>提供收费的私有注册中心，此外也有一些免费的，比如<a href="https://github.com/jbuck/npm-readonly-mirror" target="_blank" rel="external">Mozilla的只读S3/CloudFront镜像</a>和<a href="http://npmjs.eu/" target="_blank" rel="external">Maciej Małecki的欧洲镜像</a>。</p>
+<p>在Heroku上配置node程序使用定制注册中心很容易：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">heroku config:set npm_config_registry=http://registry.npmjs.eu</div></pre></td></tr></table></figure>
+<h2 id="追踪过期的依赖项"><a href="#追踪过期的依赖项" class="headerlink" title="追踪过期的依赖项"></a>追踪过期的依赖项</h2><p>如果你编程的时间足够长，可能已经领教过<a href="http://zh.wikipedia.org/wiki/%E7%9B%B8%E4%BE%9D%E6%80%A7%E5%9C%B0%E7%8B%B1" target="_blank" rel="external">相依性地狱</a>的厉害了。好在Node.js和npm接纳了semver，即<a href="http://semver.org/" target="_blank" rel="external">语义化版本管理规范</a> ，设置了一个健全的依赖项管理先例。在这个方案下，版本号和它们的变化方式传达的含义涉及到了底层代码，以及从一个版本到下一版本修改了什么。</p>
+<p>npm有一个很少有人知道的命令，outdated。它可以跟npm update结合使用，能够找出程序的那些依赖项已经过期了，需要更新：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">cd</span> my-node-app</div><div class="line">npm outdated</div><div class="line"></div><div class="line">Package            Current  Wanted     Latest  Location</div><div class="line">-------            -------  ------     ------  --------</div><div class="line">express              3.4.8   3.4.8  4.0.0-rc2  express</div><div class="line">jade                 1.1.5   1.1.5      1.3.0  jade</div><div class="line">cors                 2.1.1   2.1.1      2.2.0  cors</div><div class="line">jade                0.26.3  0.26.3      1.3.0  mocha &gt; jade</div><div class="line">diff                 1.0.7   1.0.7      1.0.8  mocha &gt; diff</div><div class="line">glob                 3.2.3   3.2.3      3.2.9  mocha &gt; glob</div><div class="line">commander            2.0.0   2.0.0      2.1.0  mocha &gt; commander</div></pre></td></tr></table></figure>
+<p>如果你做的是开源的node程序或模块，可以看看<a href="https://david-dm.org/" target="_blank" rel="external">david-dm</a>，<a href="https://nodei.co/" target="_blank" rel="external">NodeICO</a>和<a href="http://shields.io/" target="_blank" rel="external">shields.io</a>，你可以用这三个优秀服务所提供的图片徽章在项目的README或网站上显示生动的依赖信息。</p>
+<h2 id="用npm脚本运行定制的构建步骤"><a href="#用npm脚本运行定制的构建步骤" class="headerlink" title="用npm脚本运行定制的构建步骤"></a>用npm脚本运行定制的构建步骤</h2><p>随着npm生态系统的持续增长，开发和构建过程的自动化选择也会随之增长。<a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>是迄今为止node世界中最流行的构建工具，但像<a href="http://gulpjs.com/" target="_blank" rel="external">gulp.js</a>这种新工具，以及<a href="http://substack.net/task_automation_with_npm_run" target="_blank" rel="external">普通的老式npm</a>脚本也因为较轻的负载受到欢迎。</p>
+<p>在你把node程序部署到Heroku上时，要运行npm install –production命令以确保程序的npm依赖项会被下载下来装上。但那个命令也会做其它事情：它会运行你在package.json文件中定义的所有npm脚本钩子，比如preinstall和postinstall。这里有个样本：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"name"</span>: <span class="string">"my-node-app"</span>,</div><div class="line">  <span class="string">"version"</span>: <span class="string">"1.2.3"</span>,</div><div class="line">  <span class="string">"scripts"</span>: &#123;</div><div class="line">    <span class="string">"preinstall"</span>: <span class="string">"echo here it comes!"</span>,</div><div class="line">    <span class="string">"postinstall"</span>: <span class="string">"echo there it goes!"</span>,</div><div class="line">    <span class="string">"start"</span>: <span class="string">"node index.js"</span>,</div><div class="line">    <span class="string">"test"</span>: <span class="string">"tap test/*.js"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这些脚本可以是行内bash命令，或者也可以指向可执行的命令行文件。你还可以在脚本内引用其他npm脚本：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  <span class="string">"scripts"</span>: &#123;</div><div class="line">    <span class="string">"postinstall"</span>: <span class="string">"npm run build &amp;&amp; npm run rejoice"</span>,</div><div class="line">    <span class="string">"build"</span>: <span class="string">"grunt"</span>,</div><div class="line">    <span class="string">"rejoice"</span>: <span class="string">"echo yay!"</span>,</div><div class="line">    <span class="string">"start"</span>: <span class="string">"node index.js"</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="尝试新东西"><a href="#尝试新东西" class="headerlink" title="尝试新东西"></a>尝试新东西</h2><p>ES6，也就是被大众称为JavaScript的ECMAScript语言规范的下一版，其工作名称为Harmony。 Harmony给JavaScript带来了很多振奋人心的新特性，其中很多已经出现在较新版本的node中了。</p>
+<p>Harmony实现了<a href="https://github.com/lukehoban/es6features" target="_blank" rel="external">很多新特性</a>，比如<a href="https://github.com/JustinDrake/node-es6-examples#block-scoping" target="_blank" rel="external">块作用域</a>、<a href="https://github.com/JustinDrake/node-es6-examples#block-scoping" target="_blank" rel="external">生成器</a>、<a href="https://github.com/JustinDrake/node-es6-examples#proxies" target="_blank" rel="external">代理</a>、<a href="https://github.com/JustinDrake/node-es6-examples#weak-maps" target="_blank" rel="external">弱映射</a>等等。</p>
+<p>要在你的node程序中启用harmony的特性，需要指定一个比较新的node引擎，比如0.11.x，并在启动脚本中设置–harmony选项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">  &quot;scripts&quot;: &#123;</div><div class="line">    &quot;start&quot;: &quot;node --harmony index.js&quot;</div><div class="line">  &#125;,</div><div class="line">  &quot;engines&quot;: &#123;</div><div class="line">    &quot;node&quot;: &quot;0.11.x&quot;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Browserify"><a href="#Browserify" class="headerlink" title="Browserify"></a>Browserify</h2><p>客户端JavaScript有乱如麻团般的遗留代码，但那并不是语言本身的错。由于缺乏合理的依赖项管理工具，让jQuery-插件拷贝-粘帖的黑暗时代延续了好多年。感谢npm，带着我们步入了前端振兴的年代：npm注册中心像野草一样疯长，为浏览器设计的模块也呈现出了惊人的增长势头。</p>
+<p><a href="http://browserify.org/articles" target="_blank" rel="external">Browserify</a>是一个让node模块可以用在浏览器中的神奇工具。如果你是前端开发人员，browserify将会改变你的人生。可能不是今天，也不是明天，但不会太久。如果你想开始使用browserify，请参阅<a href="http://browserify.org/articles" target="_blank" rel="external">这些文章</a>。</p>
+<h2 id="你有哪些习惯？"><a href="#你有哪些习惯？" class="headerlink" title="你有哪些习惯？"></a>你有哪些习惯？</h2><p>不管你已经做过一段时间node程序，还是<a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs" target="_blank" rel="external">刚刚开始</a>，我们都希望这些小技巧能对你有所帮助。如果你有一些（健康的）node习惯想要跟大家分享，请在发tweet时带上<a href="https://twitter.com/search?q=%23node_habits&amp;src=typd&amp;f=realtime" target="_blank" rel="external">#node_habits</a>标签。编码快乐！</p>
+<h2 id="作者简介"><a href="#作者简介" class="headerlink" title="作者简介"></a>作者简介</h2><p>本文最初由<a href="http://zeke.sikelianos.com/" target="_blank" rel="external">Zeke sikelianos</a>发表在<a href="https://www.heroku.com/" target="_blank" rel="external">Heroku</a>上。Zeke在Heroku工作，用ruby和coffeescript编写开源软件。他从事设计师这一职业已经有14年了，信奉信息自由的精神，并且相信用计算机可以创造出美好的事物。</p>
+<p><strong>查看英文原文</strong>：<a href="https://blog.heroku.com/archives/2014/3/11/node-habits" target="_blank" rel="external">What’s New in Node.js v0.12 – Running Multiple Instances in a Single Process</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nodejs/" rel="tag">#nodejs</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/03/25/2014-3-25-angularjs-ng-repeat-with-no-html-element/" rel="next" title="脱离html元素的AngularJS ng-repeat">
+                <i class="fa fa-chevron-left"></i> 脱离html元素的AngularJS ng-repeat
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/09/06/2014-9-6-difference-between-the-controller-link-and-compile-functions-when-defining-a-directive/" rel="prev" title="在定义一个directive时，'controller', 'link'和'compile'的区别">
+                在定义一个directive时，'controller', 'link'和'compile'的区别 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2014/04/23/2014-4-23-nodejs-habits/"
+           data-title="快乐Node码农的十个习惯" data-url="http://blog.dongderu.net/2014/04/23/2014-4-23-nodejs-habits/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Fermin Yang" />
+          <p class="site-author-name" itemprop="name">Fermin Yang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#用npm-init开始新项目"><span class="nav-number">1.</span> <span class="nav-text">用npm init开始新项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#声明所有依赖项"><span class="nav-number">2.</span> <span class="nav-text">声明所有依赖项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定启动脚本"><span class="nav-number">3.</span> <span class="nav-text">指定启动脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#指定测试脚本"><span class="nav-number">4.</span> <span class="nav-text">指定测试脚本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不要把依赖项放在源码的版本控制中"><span class="nav-number">5.</span> <span class="nav-text">不要把依赖项放在源码的版本控制中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用环境变量配置npm"><span class="nav-number">6.</span> <span class="nav-text">用环境变量配置npm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#带着你自己的npm注册中心"><span class="nav-number">7.</span> <span class="nav-text">带着你自己的npm注册中心</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#追踪过期的依赖项"><span class="nav-number">8.</span> <span class="nav-text">追踪过期的依赖项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用npm脚本运行定制的构建步骤"><span class="nav-number">9.</span> <span class="nav-text">用npm脚本运行定制的构建步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#尝试新东西"><span class="nav-number">10.</span> <span class="nav-text">尝试新东西</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Browserify"><span class="nav-number">11.</span> <span class="nav-text">Browserify</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#你有哪些习惯？"><span class="nav-number">12.</span> <span class="nav-text">你有哪些习惯？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#作者简介"><span class="nav-number">13.</span> <span class="nav-text">作者简介</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fermin Yang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ferminyang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

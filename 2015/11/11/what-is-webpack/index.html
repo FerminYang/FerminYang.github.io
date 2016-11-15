@@ -1,0 +1,677 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="frontend,translation," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="止觀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="webpack 是一个模块打包器。
+webpack 处理带有依赖关系的模块，生成一系列表示这些模块的静态资源。
+
+为什么再造一个模块打包器现有的模块打包器并不适用于大项目（如大的单页应用）。最重要的因素是，代码拆分和把静态资源无缝接入模块化。
+尝试过扩展已有模块打包器，但无法达成下面所有的目标。
+目标
+把依赖树拆成可按需加载的块
+让初始化加载时间尽可能地少
+每个静态资源都是一个模块
+模块化集成第三">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Webpack介绍">
+<meta property="og:url" content="http://blog.dongderu.net/2015/11/11/what-is-webpack/index.html">
+<meta property="og:site_name" content="止觀">
+<meta property="og:description" content="webpack 是一个模块打包器。
+webpack 处理带有依赖关系的模块，生成一系列表示这些模块的静态资源。
+
+为什么再造一个模块打包器现有的模块打包器并不适用于大项目（如大的单页应用）。最重要的因素是，代码拆分和把静态资源无缝接入模块化。
+尝试过扩展已有模块打包器，但无法达成下面所有的目标。
+目标
+把依赖树拆成可按需加载的块
+让初始化加载时间尽可能地少
+每个静态资源都是一个模块
+模块化集成第三">
+<meta property="og:image" content="http://webpack.github.io/assets/what-is-webpack.png">
+<meta property="og:updated_time" content="2016-11-15T08:45:08.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Webpack介绍">
+<meta name="twitter:description" content="webpack 是一个模块打包器。
+webpack 处理带有依赖关系的模块，生成一系列表示这些模块的静态资源。
+
+为什么再造一个模块打包器现有的模块打包器并不适用于大项目（如大的单页应用）。最重要的因素是，代码拆分和把静态资源无缝接入模块化。
+尝试过扩展已有模块打包器，但无法达成下面所有的目标。
+目标
+把依赖树拆成可按需加载的块
+让初始化加载时间尽可能地少
+每个静态资源都是一个模块
+模块化集成第三">
+<meta name="twitter:image" content="http://webpack.github.io/assets/what-is-webpack.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.dongderu.net/2015/11/11/what-is-webpack/"/>
+
+  <title> Webpack介绍 | 止觀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">止觀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Webpack介绍
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-11-11T12:12:00+00:00" content="2015-11-11">
+              2015-11-11
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Documentation/" itemprop="url" rel="index">
+                    <span itemprop="name">Documentation</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/11/11/what-is-webpack/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/11/what-is-webpack/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>webpack</strong> 是一个<strong>模块打包器</strong>。</p>
+<p>webpack 处理带有依赖关系的模块，生成一系列表示这些模块的静态资源。</p>
+<p><img src="http://webpack.github.io/assets/what-is-webpack.png" alt=""></p>
+<h2 id="为什么再造一个模块打包器"><a href="#为什么再造一个模块打包器" class="headerlink" title="为什么再造一个模块打包器"></a>为什么再造一个模块打包器</h2><p>现有的模块打包器并不适用于大项目（如大的单页应用）。最重要的因素是，<a href="http://webpack.github.io/docs/code-splitting.html" target="_blank" rel="external">代码拆分</a>和把静态资源无缝接入模块化。</p>
+<p>尝试过扩展已有模块打包器，但无法达成下面所有的目标。</p>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ul>
+<li>把依赖树拆成可按需加载的块</li>
+<li>让初始化加载时间尽可能地少</li>
+<li>每个静态资源都是一个模块</li>
+<li>模块化集成第三方库</li>
+<li>尽可能地自定义打包器的每一部分</li>
+<li>适合大项目</li>
+</ul>
+<h2 id="webpack-的特别之处"><a href="#webpack-的特别之处" class="headerlink" title="webpack 的特别之处"></a>webpack 的特别之处</h2><h3 id="代码拆分"><a href="#代码拆分" class="headerlink" title="代码拆分"></a><a href="http://webpack.github.io/docs/code-splitting.html" target="_blank" rel="external">代码拆分</a></h3><p>webpack 的依赖树中有同步和异步两种依赖方式。其中，异步模块将会被拆成一个新的块，并且在被优化后，生成一个对应的文件。</p>
+<p>更多参考<a href="http://webpack.github.io/docs/code-splitting.html" target="_blank" rel="external">代码拆分</a>。</p>
+<h3 id="加载器"><a href="#加载器" class="headerlink" title="加载器"></a><a href="http://webpack.github.io/docs/loaders.html" target="_blank" rel="external">加载器</a></h3><p>webpack 本身只支持处理 JavaScript，但可以通过加载器来把别的资源转为 JavaScript。因此，每个资源都被当作一个模块。</p>
+<p>更多参考<a href="http://webpack.github.io/docs/using-loaders.html" target="_blank" rel="external">使用加载器</a>和<a href="http://webpack.github.io/docs/loaders.html" target="_blank" rel="external">加载器</a>。</p>
+<h3 id="智能解析"><a href="#智能解析" class="headerlink" title="智能解析"></a>智能解析</h3><p>webpack 有一个基本支持所有第三方库的智能解析器，甚至还支持带有表达式的依赖表述法，如 <code>require(&quot;./templates/&quot; + name + &quot;.jade&quot;)</code>。支持最常用的 <a href="http://webpack.github.io/docs/commonjs.html" target="_blank" rel="external">CommonJs</a> 和 <a href="http://webpack.github.io/docs/amd.html" target="_blank" rel="external">AMD</a> 这两种模块风格。</p>
+<p>更多参考<a href="http://webpack.github.io/docs/context.html" target="_blank" rel="external">含有表达式的依赖表述</a>、<a href="http://webpack.github.io/docs/commonjs.html" target="_blank" rel="external">CommonJs</a> 和 <a href="http://webpack.github.io/docs/amd.html" target="_blank" rel="external">AMD</a>。</p>
+<h3 id="插件系统"><a href="#插件系统" class="headerlink" title="插件系统"></a><a href="http://webpack.github.io/docs/plugins.html" target="_blank" rel="external">插件系统</a></h3><p>webpack 有一个很出色的插件系统，甚至大部分内置功能都是基于这个插件系统而来的。这个插件系统允许你根据需要来自定义 webpack，以及通过开源的方式来分发通用插件。</p>
+<p>更多参考<a href="http://webpack.github.io/docs/plugins.html" target="_blank" rel="external">插件</a>。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/frontend/" rel="tag">#frontend</a>
+          
+            <a href="/tags/translation/" rel="tag">#translation</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/05/30/2014-5-30-facebook-mvc-flux/" rel="next" title="Facebook：MVC不适合大规模应用，改用Flux">
+                <i class="fa fa-chevron-left"></i> Facebook：MVC不适合大规模应用，改用Flux
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/01/07/2016-1-7-sails-mysql-transactions/" rel="prev" title="基于SailsJS与Mysql的ORM事务操作以及数据复制">
+                基于SailsJS与Mysql的ORM事务操作以及数据复制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/11/11/what-is-webpack/"
+           data-title="Webpack介绍" data-url="http://blog.dongderu.net/2015/11/11/what-is-webpack/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Fermin Yang" />
+          <p class="site-author-name" itemprop="name">Fermin Yang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么再造一个模块打包器"><span class="nav-number">1.</span> <span class="nav-text">为什么再造一个模块打包器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标"><span class="nav-number">2.</span> <span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#webpack-的特别之处"><span class="nav-number">3.</span> <span class="nav-text">webpack 的特别之处</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码拆分"><span class="nav-number">3.1.</span> <span class="nav-text">代码拆分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加载器"><span class="nav-number">3.2.</span> <span class="nav-text">加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#智能解析"><span class="nav-number">3.3.</span> <span class="nav-text">智能解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插件系统"><span class="nav-number">3.4.</span> <span class="nav-text">插件系统</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fermin Yang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ferminyang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,654 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javascript,frontend,html5," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="止觀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="转载自： http://www.cnblogs.com/zhwl/p/3580776.html
+目前市场上大多数的网站的断点上传都是需要安装浏览器插件的，本文就针对高级浏览器的环境下，通过HTML5 File api实现断点上传进行说明
+实现文件多选HTML5的&amp;lt;input&amp;gt;新增了multiple属性，该属性可接受多个值的文件上传字段
+1&amp;lt;input type=&quot;file&quot; mu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTML5 File api 实现断点续传">
+<meta property="og:url" content="http://blog.dongderu.net/2014/03/04/2014-3-4-html5-file-api/index.html">
+<meta property="og:site_name" content="止觀">
+<meta property="og:description" content="转载自： http://www.cnblogs.com/zhwl/p/3580776.html
+目前市场上大多数的网站的断点上传都是需要安装浏览器插件的，本文就针对高级浏览器的环境下，通过HTML5 File api实现断点上传进行说明
+实现文件多选HTML5的&amp;lt;input&amp;gt;新增了multiple属性，该属性可接受多个值的文件上传字段
+1&amp;lt;input type=&quot;file&quot; mu">
+<meta property="og:updated_time" content="2016-11-15T08:45:08.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HTML5 File api 实现断点续传">
+<meta name="twitter:description" content="转载自： http://www.cnblogs.com/zhwl/p/3580776.html
+目前市场上大多数的网站的断点上传都是需要安装浏览器插件的，本文就针对高级浏览器的环境下，通过HTML5 File api实现断点上传进行说明
+实现文件多选HTML5的&amp;lt;input&amp;gt;新增了multiple属性，该属性可接受多个值的文件上传字段
+1&amp;lt;input type=&quot;file&quot; mu">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.dongderu.net/2014/03/04/2014-3-4-html5-file-api/"/>
+
+  <title> HTML5 File api 实现断点续传 | 止觀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">止觀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                HTML5 File api 实现断点续传
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2014-03-04T02:20:00+00:00" content="2014-03-04">
+              2014-03-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Practice/" itemprop="url" rel="index">
+                    <span itemprop="name">Practice</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2014/03/04/2014-3-4-html5-file-api/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2014/03/04/2014-3-4-html5-file-api/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>转载自： <a href="http://www.cnblogs.com/zhwl/p/3580776.html" target="_blank" rel="external">http://www.cnblogs.com/zhwl/p/3580776.html</a></p>
+<p>目前市场上大多数的网站的断点上传都是需要安装浏览器插件的，本文就针对高级浏览器的环境下，通过HTML5 File api实现断点上传进行说明</p>
+<h2 id="实现文件多选"><a href="#实现文件多选" class="headerlink" title="实现文件多选"></a>实现文件多选</h2><p>HTML5的<code>&lt;input&gt;</code>新增了<code>multiple</code>属性，该属性可接受多个值的文件上传字段</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">multiple</span>=<span class="string">"multiple"</span> <span class="attr">name</span>=<span class="string">"file"</span> <span class="attr">id</span>=<span class="string">"file"</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>添加了该属性用户就可以在弹出的对话框中一次性选择多个文件了</p>
+<h2 id="实现文件从计算机拖拽到网页以及添加文件队列功能"><a href="#实现文件从计算机拖拽到网页以及添加文件队列功能" class="headerlink" title="实现文件从计算机拖拽到网页以及添加文件队列功能"></a>实现文件从计算机拖拽到网页以及添加文件队列功能</h2><p>这里我们用 dragover 和 drop 两个事件来管理文件拖拽的功能<br>其中 dragover 用来处理在指定的元素上移动时的事件，这里我们通过给body绑定dragover时间来处理页面中拖动文件的事件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">document</span>.body.addEventListener(<span class="string">'dragover'</span>, dragFile, <span class="literal">false</span>);</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">dragFile</span>(<span class="params">evt</span>) </span>&#123;</div><div class="line">    evt.stopPropagation();</div><div class="line">    evt.preventDefault();</div><div class="line">    evt.dataTransfer.dropEffect = <span class="string">'copy'</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>用 drop 事件来处理鼠标松开时候的事件，此时应该将用户拖动过来的文件加入到上传队列中，以供后续的处理</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">document</span>.body.addEventListener(<span class="string">'drop'</span>, dropFile, <span class="literal">false</span>);</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">dragFile</span>(<span class="params">evt</span>) </span>&#123;</div><div class="line">    evt.stopPropagation();</div><div class="line">    evt.preventDefault();</div><div class="line">    <span class="comment">// dataTransfer.files属性可以获取到所有拖动选择的文件，通过遍历可以读取到所有文件的信息。</span></div><div class="line">    <span class="comment">// 遍历每个文件可以获取到文件的 name、size、type、lastModifiedDate等关键信息</span></div><div class="line">    <span class="keyword">var</span> files = evt.dataTransfer.files;</div><div class="line">    <span class="comment">// addfile 方法 用来添加上传文件队列，在input的change事件中也需要调用</span></div><div class="line">    <span class="comment">// 该方法首先检查有无文件正在上传中，如果有就将后续加入的文件放到上传队列中，如果没有文件正在上传就直接执行上传命令</span></div><div class="line">    addfile(files);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="文件续传原理"><a href="#文件续传原理" class="headerlink" title="文件续传原理"></a>文件续传原理</h2><p>目前比较常用的断点续传的方法有两种，一种是通过websocket接口进行文件上传，另一种是通过ajax，两种方法各有千秋，虽然websocket听起来比较高端些~ 但是除了用了不同的协议外其他的算法基本上都是很相似的，并且服务端要开启ws接口，这里用相对方便的ajax来说明断点上传的思路。<br>说来说去，断点续传最核心的内容就是把文件“切片”然后再一片一片的传给服务器，但是这看似简单的上传过程却有着无数的坑。<br>首先是文件的识别，一个文件被分成了若干份之后如何告诉服务器你切了多少块，以及最终服务器应该如何把你上传上去的文件进行合并，这都是要考虑的。<br>因此在文件开始上传之前，我们和服务器要有一个“握手”的过程，告诉服务器文件信息，然后和服务器约定切片的大小，当和服务器达成共识之后就可以开始后续的文件传输了。<br>前台要把每一块的文件传给后台，成功之后前端和后端都要标识一下，以便后续的断点。<br>当文件传输中断之后用户再次选择文件就可以通过标识来判断文件是否已经上传了一部分，如果是的话，那么我们可以接着上次的进度继续传文件，以达到续传的功能。</p>
+<h2 id="文件的前端切片"><a href="#文件的前端切片" class="headerlink" title="文件的前端切片"></a>文件的前端切片</h2><p>有了HTML5 的 File api之后切割文件比想想的要简单的多的多。<br>只要用slice 方法就可以了</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> packet = file.slice(start, end);</div></pre></td></tr></table></figure>
+<p>参数start是开始切片的位置，end是切片结束的位置 单位都是字节。通过控制start和end 就可以是实现文件的分块<br>如</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">file.slice(<span class="number">0</span>,<span class="number">1000</span>);</div><div class="line">file.slice(<span class="number">1000</span>,<span class="number">2000</span>);</div><div class="line">file.slice(<span class="number">2000</span>,<span class="number">3000</span>);</div><div class="line"><span class="comment">// ......</span></div></pre></td></tr></table></figure>
+<h2 id="文件片段的上传"><a href="#文件片段的上传" class="headerlink" title="文件片段的上传"></a>文件片段的上传</h2><p>上一部我们通过slice方法把文件分成了若干块，接下来要做的事情就是把这些碎片传到服务器上。<br>这里我们用ajax的post请求来实现</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line"><span class="keyword">var</span> url = xxx <span class="comment">// 文件上传的地址 可以包括文件的参数 如文件名称 分块数等以便后台处理</span></div><div class="line">xhr.open(<span class="string">'POST'</span>, url, <span class="literal">true</span>);</div><div class="line">xhr.onload = <span class="function"><span class="keyword">function</span> (<span class="params">e</span>)</span>&#123;</div><div class="line">     <span class="comment">// 判断文件是否上传成功，如果成功继续上传下一块，如果失败重试该快</span></div><div class="line">&#125;</div><div class="line">xhr.upload.onprogress = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</div><div class="line">     <span class="comment">// 选用 如果文件分块大小较大 可以通过该方法判断单片文件具体的上传进度</span></div><div class="line">     <span class="comment">// e.loaded  该片文件上传了多少</span></div><div class="line">     <span class="comment">// e.totalSize 该片文件的总共大小</span></div><div class="line">&#125;</div><div class="line">xhr.send(packet);</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag">#javascript</a>
+          
+            <a href="/tags/frontend/" rel="tag">#frontend</a>
+          
+            <a href="/tags/html5/" rel="tag">#html5</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2013/05/22/2013-5-22-CQRS-Introduction/" rel="next" title="CQRS介绍">
+                <i class="fa fa-chevron-left"></i> CQRS介绍
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/03/08/2014-3-8-transactional-sql-with-sails-js/" rel="prev" title="使用Sails.js执行Sql事务">
+                使用Sails.js执行Sql事务 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2014/03/04/2014-3-4-html5-file-api/"
+           data-title="HTML5 File api 实现断点续传" data-url="http://blog.dongderu.net/2014/03/04/2014-3-4-html5-file-api/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Fermin Yang" />
+          <p class="site-author-name" itemprop="name">Fermin Yang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现文件多选"><span class="nav-number">1.</span> <span class="nav-text">实现文件多选</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现文件从计算机拖拽到网页以及添加文件队列功能"><span class="nav-number">2.</span> <span class="nav-text">实现文件从计算机拖拽到网页以及添加文件队列功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件续传原理"><span class="nav-number">3.</span> <span class="nav-text">文件续传原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件的前端切片"><span class="nav-number">4.</span> <span class="nav-text">文件的前端切片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件片段的上传"><span class="nav-number">5.</span> <span class="nav-text">文件片段的上传</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fermin Yang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ferminyang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

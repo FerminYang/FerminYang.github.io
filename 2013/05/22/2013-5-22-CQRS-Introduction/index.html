@@ -1,0 +1,730 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="translation,DDD,CQRS," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="止觀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="我今天找到一篇好文，深入浅出的介绍了CQRS，边翻译边学习了。原文地址：http://www.codeproject.com/Articles/555855/Introduction-to-CQRS
+附带源码下载
+转载请注明出处 http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/
+CQRS是什么？
+CQRS就是指命令和查">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CQRS介绍">
+<meta property="og:url" content="http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/index.html">
+<meta property="og:site_name" content="止觀">
+<meta property="og:description" content="我今天找到一篇好文，深入浅出的介绍了CQRS，边翻译边学习了。原文地址：http://www.codeproject.com/Articles/555855/Introduction-to-CQRS
+附带源码下载
+转载请注明出处 http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/
+CQRS是什么？
+CQRS就是指命令和查">
+<meta property="og:image" content="http://www.codeproject.com/KB/architecture/555855/CQRS.jpg">
+<meta property="og:image" content="http://www.codeproject.com/KB/architecture/555855/QuerySide.jpg">
+<meta property="og:image" content="http://www.codeproject.com/KB/architecture/555855/CommandSide.jpg">
+<meta property="og:image" content="http://www.codeproject.com/KB/architecture/555855/main.jpg">
+<meta property="og:updated_time" content="2016-11-15T08:45:08.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CQRS介绍">
+<meta name="twitter:description" content="我今天找到一篇好文，深入浅出的介绍了CQRS，边翻译边学习了。原文地址：http://www.codeproject.com/Articles/555855/Introduction-to-CQRS
+附带源码下载
+转载请注明出处 http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/
+CQRS是什么？
+CQRS就是指命令和查">
+<meta name="twitter:image" content="http://www.codeproject.com/KB/architecture/555855/CQRS.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/"/>
+
+  <title> CQRS介绍 | 止觀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">止觀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                CQRS介绍
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2013-05-22T14:12:00+00:00" content="2013-05-22">
+              2013-05-22
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Documentation/" itemprop="url" rel="index">
+                    <span itemprop="name">Documentation</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2013/05/22/2013-5-22-CQRS-Introduction/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2013/05/22/2013-5-22-CQRS-Introduction/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我今天找到一篇好文，深入浅出的介绍了CQRS，边翻译边学习了。原文地址：<br><a href="http://www.codeproject.com/Articles/555855/Introduction-to-CQRS" target="_blank" rel="external">http://www.codeproject.com/Articles/555855/Introduction-to-CQRS</a></p>
+<p><a href="https://dl.dongderu.net/u/109488224/Diary.CQRS.zip" target="_blank" rel="external">附带源码下载</a></p>
+<p>转载请注明出处 <a href="http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/">http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/</a></p>
+<h1 id="CQRS是什么？"><a href="#CQRS是什么？" class="headerlink" title="CQRS是什么？"></a>CQRS是什么？</h1><p><img src="http://www.codeproject.com/KB/architecture/555855/CQRS.jpg" alt=""></p>
+<p>CQRS就是指命令和查询职责的分离。许多人认为CQRS是一个完整的构架，但是他们错了。CQRS只是一个小的模式形态。这个模式最初是由Greg Young和Udi Dahan两位大师提出的。他们是从一个叫做“命令与查询分离”的模式得到的灵感，这个模式是由Bertrand Meyer在他撰写的《Object Oriented Software Construction》书里定义的。该模式的关键在于：“一个方法要么是用来改变某个对象的状态的，要么就是返回一个结果，这两者不会同时并存”。换句话说，提问不会改变问题的答案。正式一点的说法是，之所以要方法返回结果，因为他是“引用透明的”，因此不会执行额外的有影响的操作（来自维基百科）。（插一句，这句话你可能看不懂，请自行琢磨原文，我根据自己的理解白话一下：你既然要得到正常的结果，不会蛋疼到查询的时候同时去改变要查询的结果吧==b。。。）根据上述理论，我们可以把方法拆分成两个部分：</p>
+<ul>
+<li><strong>Commands（命令）</strong> - 改变某一个对象或整个系统的状态（有时也叫做modifiers或者mutators）。</li>
+<li><strong>Queries（查询）</strong> - 返回值并且不会改变对象的状态。</li>
+</ul>
+<p>在实际操作中很容易把这两者区分开来。查询会返回一个预先定义的类型，而命令返回void。这样一个模式被已经得到广泛的认可而且能帮助大家更好地理解对象。不过另一方面来说，CQRS仅适用于某些特定的场景。</p>
+<p>大多数应用都使用了主流的专注于模型的读和写操作的解决方案。但是读和写采用相同的模型会导致模型越来越复杂变得十分难以维护和优化。</p>
+<p>命令与查询两种模式的应用的真正优势是你可以将那些改变状态的操作从那些不应该出现的地方剥离出来。这样的分离会给你在处理调试和优化的过程中带来很大的方便。你可以将你的读取端独立地进行优化，而暂且不管写的操作。写操作端就是指领域的范畴了。领域包含了所有的行为。而读取端仅仅是用来做数据呈现的。</p>
+<p>采取这样的模式的另一个好处是，在大型的应用中，你可以将你的开发团队进行分割，以分别负责读和写的实现，且两者之间的知识的传递可以不对称。比如负责呈现数据的小组根本不需要了解领域模型，命令和ES的知识和实现，只需要了解展现数据库的结构。（好钢用在刀刃上，这样可以为企业优化组合，节约成本）</p>
+<h2 id="Query-side（查询端）"><a href="#Query-side（查询端）" class="headerlink" title="Query side（查询端）"></a>Query side（查询端）</h2><p>查询端仅包含获取数据的方法。从架构的角度出发，所有的方法都应该返回用于显示目的的DTO(Data Transfer Object)。一般来说DTO就是Domain Objects（领域对象）的投射（两者很相像）。在有些情况下，构建DTO的过程会十分蛋疼，尤其在需要构建一些很复杂的DTO的情况下。</p>
+<p><img src="http://www.codeproject.com/KB/architecture/555855/QuerySide.jpg" alt=""></p>
+<p>如图，Read Layer（读取操作层）可以直连数据库（数据源），直接用存储过程来读在这种模式下不是一个坏主意。直连数据源使得查询维护和优化变得十分容易。这里采用denormalize（反规范化，就是允许数据冗余，比如一张表对应一个页面，不使用Join，允许有重复的字段）的数据库设计也是有道理的。原因在于数据的读取操作往往好几倍频繁于领域行为的执行。而反规范化的应用可以很好的帮助应用提升性能。</p>
+<h2 id="Command-Side（命令端）"><a href="#Command-Side（命令端）" class="headerlink" title="Command Side（命令端）"></a>Command Side（命令端）</h2><p><img src="http://www.codeproject.com/KB/architecture/555855/CommandSide.jpg" alt=""></p>
+<p>命令由客户端发出，并传送到领域层。命令实际上是一种消息，它包含了一些特定的实体信息来完成某一项操作。命令的命名规则可以是DoSomething（举个例子，ChangeName, DeleteOrder…）。他们通知领域实体执行某种操作并返回一个值或者失败信号。命令由Command Handler（命令执行器）进行处理。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">ICommand</span></div><div class="line">&#123;</div><div class="line">    Guid Id &#123; <span class="keyword">get</span>; &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Command</span> : <span class="title">ICommand</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> Guid Id &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Version &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Command</span>(<span class="params">Guid id,<span class="keyword">int</span> version</span>)</span></div><div class="line">    &#123;</div><div class="line">        Id = id;</div><div class="line">        Version = version;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"> </div><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CreateItemCommand</span>:<span class="title">Command</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Title &#123; <span class="keyword">get</span>; <span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Description &#123; <span class="keyword">get</span>;<span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> DateTime From &#123; <span class="keyword">get</span>; <span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> DateTime To &#123; <span class="keyword">get</span>; <span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CreateItemCommand</span>(<span class="params">Guid aggregateId, <span class="keyword">string</span> title, </span></span></div><div class="line">        <span class="keyword">string</span> description,<span class="keyword">int</span> version,DateTime <span class="keyword">from</span>, DateTime to)</div><div class="line">        : <span class="title">base</span>(<span class="params">aggregateId,version</span>)</div><div class="line">    &#123;</div><div class="line">        Title = title;</div><div class="line">        Description = description;</div><div class="line">        From = <span class="keyword">from</span>;</div><div class="line">        To = to;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>所有的命令都会被传入Command Bus（命令总线），它会将每个命令委派给Command Handler进行处理。这样做保证了领域的单一入口。Command Handler的职责是调用领域层内相应的方法。Command Handler需要具有repository（仓储）的数据连接来加载需要的实体（在CQRS模式中就是指聚合根）以满足某些方法的需要。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">public interface ICommandHandler&lt;TCommand&gt; where TCommand : Command</div><div class="line">&#123;</div><div class="line">    void Execute(TCommand command);</div><div class="line">&#125;</div><div class="line"></div><div class="line">public class CreateItemCommandHandler : ICommandHandler&lt;CreateItemCommand&gt;</div><div class="line">&#123;</div><div class="line">    private IRepository&lt;DiaryItem&gt; _repository;</div><div class="line"></div><div class="line">    public CreateItemCommandHandler(IRepository&lt;DiaryItem&gt; repository)</div><div class="line">    &#123;</div><div class="line">        _repository = repository;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    public void Execute(CreateItemCommand command)</div><div class="line">    &#123;</div><div class="line">        if (command == null)</div><div class="line">        &#123;</div><div class="line">            throw new ArgumentNullException("command");</div><div class="line">        &#125;</div><div class="line">        if (_repository == null)</div><div class="line">        &#123;</div><div class="line">            throw new InvalidOperationException("Repository is not initialized.");</div><div class="line">        &#125;</div><div class="line">        var aggregate = new DiaryItem(command.Id, command.Title, command.Description,             </div><div class="line">                                      command.From, command.To);</div><div class="line">        aggregate.Version = -1;</div><div class="line">        _repository.Save(aggregate, aggregate.Version);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Command Handler负责如下几项工作：</p>
+<ul>
+<li>负责从消息基础架构（Command Bus）里接受Command实例。</li>
+<li>负责验证Command是否有效。</li>
+<li>负责找到针对该Command的聚合实例。</li>
+<li>负责调用聚合实例的相关方法，并且从Command类中获取相关字段作为参数传入方法中。</li>
+<li>从聚合的角度来看总是在更新状态（可以从代码得到直观体现）。</li>
+</ul>
+<h2 id="Internal-Events（内部事件）"><a href="#Internal-Events（内部事件）" class="headerlink" title="Internal Events（内部事件）"></a>Internal Events（内部事件）</h2><p>在讨论这个话题之前，我们可能会先想到一个问题，什么是领域事件？领域事件就是那些在系统中已经发生的事情。事件对应命令的执行结果。让我们来举个例子，客户端请求了一个DTO并且在其基础上做了一些修改，而后产生了一条命令向系统推送。相应的Handler加载了对应的聚合根并且执行了指定的Domain Behavior（领域方法），该方法同时产生了一个事件，这个事件由特定的subscriber（订阅器）接收。聚合随后将该事件发布到事件总线上，由事件总线负责将其分发给相关的Handler执行。而那些在聚合根内部被获取执行的就被称为<strong>内部事件</strong>。内部事件的Handler出了负责设置聚合根内部属性的状态以外不作任何其他的操作。</p>
+<h3 id="Domain-Behavior（领域方法）"><a href="#Domain-Behavior（领域方法）" class="headerlink" title="Domain Behavior（领域方法）"></a>Domain Behavior（领域方法）</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ChangeTitle</span>(<span class="params"><span class="keyword">string</span> title</span>)</span></div><div class="line">&#123;</div><div class="line">    ApplyChange(<span class="keyword">new</span> ItemRenamedEvent(Id, title));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Domain-Event（领域事件）"><a href="#Domain-Event（领域事件）" class="headerlink" title="Domain Event（领域事件）"></a>Domain Event（领域事件）</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">ItemCreatedEvent</span>:<span class="title">Event</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Title &#123; <span class="keyword">get</span>; <span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> DateTime From &#123; <span class="keyword">get</span>; <span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> DateTime To &#123; <span class="keyword">get</span>; <span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">string</span> Description &#123; <span class="keyword">get</span>;<span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ItemCreatedEvent</span>(<span class="params">Guid aggregateId, <span class="keyword">string</span> title ,</span></span></div><div class="line">        <span class="keyword">string</span> description, DateTime <span class="keyword">from</span>, DateTime to)</div><div class="line">    &#123;</div><div class="line">        AggregateId = aggregateId;</div><div class="line">        Title = title;</div><div class="line">        From = <span class="keyword">from</span>;</div><div class="line">        To = to;</div><div class="line">        Description = description;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Event</span>:<span class="title">IEvent</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Version;</div><div class="line">    <span class="keyword">public</span> Guid AggregateId &#123; <span class="keyword">get</span>; <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> Guid Id &#123; <span class="keyword">get</span>; <span class="keyword">private</span> <span class="keyword">set</span>; &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Internal-Domain-Event-Handler（内部领域事件执行器）"><a href="#Internal-Domain-Event-Handler（内部领域事件执行器）" class="headerlink" title="Internal Domain Event Handler（内部领域事件执行器）"></a>Internal Domain Event Handler（内部领域事件执行器）</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Handle</span>(<span class="params">ItemRenamedEvent e</span>)</span></div><div class="line">&#123;</div><div class="line">    Title = e.Title;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>事件还经常会挂载一套被称为Event Sourcing (ES)（事件溯源）的模式。事件溯源是一种通过将聚合的变化以事件的形式记录，并将其转换成二进制流保存，以实现持久化的途径。</p>
+<p>就像之前提到的那样，聚合根内部所有的状态变化都由事件触发，而且内部事件执行器除了改变的聚合根状态外其他啥事不管。为了要得到聚合根某一个事件点的状态，就需要通过回放事件来完成。在这里我必须提醒一点，就是所有的事件都是只写操作。你不可以改动或者删除已生成的事件。如果你发现系统内部产生了一些错误的事件，你就必须再创建一些修正的事件来弥补之前的错误。</p>
+<h2 id="External-Events（外部事件）"><a href="#External-Events（外部事件）" class="headerlink" title="External Events（外部事件）"></a>External Events（外部事件）</h2><p>外部事件经常用来向展示数据库同步当前领域状态的信息。要做到这点，首先要将内部事件发布到领域外部（通过事件总线）。当事件被发布以后，相应的Handler就会接收执行后续的工作。外部事件可以同时面向多个Handler发布。外部事件的Handler主要负责如下几项工作：</p>
+<ul>
+<li>负责从messaging infrastructure (Event Bus)（消息机制（事件总线））接收事件的实例。</li>
+<li>负责加载作业管理器实例（举个例子来说，针对仅负责同步展示数据库的Handler，作业管理器就是ORM框架，或者SqlHelper类）来处理事件。</li>
+<li>负责将事件内部的信息作为参数传入，并调用执行作业管理器实例的相应方法。</li>
+<li>从作业管理器的角度来看总是在更新状态（可以从代码里得到直观体现）。</li>
+</ul>
+<h1 id="示例代码说明"><a href="#示例代码说明" class="headerlink" title="示例代码说明"></a>示例代码说明</h1><p>我创建了一个非常简单的例子来演示怎么样实现CQRS模式。这个例子可以让你创建和修改你的日志。该解决方案包含如下项目：</p>
+<ul>
+<li>Diary.CQRS</li>
+<li>Diary.CQRS.Configuration</li>
+<li>Diary.CQRS.Web</li>
+</ul>
+<p>第一个项目包含了所有领域和消息对象。Configuration项目给WebUI提供了IoC注入支持。我们现在来自己看一下这些项目。</p>
+<h2 id="Diary-CQRS"><a href="#Diary-CQRS" class="headerlink" title="Diary.CQRS"></a>Diary.CQRS</h2><p>就像我先前提到过的那样，这个项目包含了本例所需的所有领域和消息对象。本CQRS示例项目的唯一入口就是通过将Command发布到Command Bus上。CommandBus类只有一个<strong>Send(T command)</strong>方法。该方法负责通过调用<strong>CommandHandlerFactory</strong>来创建对应的Command Handler。如果某个Command没有找到对应的Command Handler，则会抛出异常。正常情况下，<strong>Execute</strong>方法作为某个行为执行的一部分被调用。该行为会创建一个内部事件，且该事件会存入一个名为<strong>_changes</strong>的内部成员。该成员的定义可以在<strong>AggregateRoot</strong>基类里找到。接下来，该事件会由内部事件处理器处理来更新聚合实例的属性状态。在整个行为执行完毕以后，所有该聚合实例下的未保存事件都会通过仓储进行持久化操作。仓储会将当前聚合实例的版本与已经被持久化保存的实例进行版本比较，查看是否有冲突。如果版本不同，就意味着对象可能已经被其他人改过了，系统将抛出<strong>ConcurrencyException</strong>异常。正常情况下，事件将通过Event Storage进行持久化。</p>
+<h3 id="Repository（仓储）"><a href="#Repository（仓储）" class="headerlink" title="Repository（仓储）"></a>Repository（仓储）</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">public class Repository&lt;T&gt; : IRepository&lt;T&gt; where T : AggregateRoot, new()</div><div class="line">&#123;</div><div class="line">    private readonly IEventStorage _storage;</div><div class="line">    private static object _lockStorage = new object();</div><div class="line"></div><div class="line">    public Repository(IEventStorage storage)</div><div class="line">    &#123;</div><div class="line">        _storage = storage;</div><div class="line">    &#125; </div><div class="line"></div><div class="line">    public void Save(AggregateRoot aggregate, int expectedVersion)</div><div class="line">    &#123;</div><div class="line">        if (aggregate.GetUncommittedChanges().Any())</div><div class="line">        &#123;</div><div class="line">            lock (_lockStorage)</div><div class="line">            &#123;</div><div class="line">                var item = new T();</div><div class="line"></div><div class="line">                if (expectedVersion != -1)</div><div class="line">                &#123;</div><div class="line">                    item = GetById(aggregate.Id);</div><div class="line">                    if (item.Version != expectedVersion)</div><div class="line">                    &#123;</div><div class="line">                        throw new ConcurrencyException(string.Format("Aggregate &#123;0&#125; has been previously modified",</div><div class="line">                                                                     item.Id));</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                _storage.Save(aggregate);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    public T GetById(Guid id)</div><div class="line">    &#123;</div><div class="line">       IEnumerable&lt;Event&gt; events;</div><div class="line">       var memento = _storage.GetMemento&lt;BaseMemento&gt;(id);</div><div class="line">       if (memento != null)</div><div class="line">       &#123;</div><div class="line">           events = _storage.GetEvents(id).Where(e=&gt;e.Version&gt;=memento.Version);</div><div class="line">       &#125;</div><div class="line">       else</div><div class="line">       &#123;</div><div class="line">           events = _storage.GetEvents(id);</div><div class="line">       &#125;</div><div class="line">        var obj = new T();</div><div class="line">        if(memento!=null)</div><div class="line">            ((IOriginator)obj).SetMemento(memento);</div><div class="line">        </div><div class="line">        obj.LoadsFromHistory(events);</div><div class="line">        return obj;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="InMemoryEventStorage（事件存储【保存在内存中】）"><a href="#InMemoryEventStorage（事件存储【保存在内存中】）" class="headerlink" title="InMemoryEventStorage（事件存储【保存在内存中】）"></a>InMemoryEventStorage（事件存储【保存在内存中】）</h3><p>在本例中，我创建了一个<strong>InMemoryEventStorage</strong>类，他可以将所有的事件存储在内存中。该类实现了<strong>IEventStorage</strong>接口并重写了四个方法：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> IEnumerable&lt;Event&gt; <span class="title">GetEvents</span>(<span class="params">Guid aggregateId</span>)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">var</span> events = _events.Where(p =&gt; p.AggregateId == aggregateId).Select(p =&gt; p);</div><div class="line">    <span class="keyword">if</span> (events.Count() == <span class="number">0</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AggregateNotFoundException(<span class="keyword">string</span>.Format(</div><div class="line">          <span class="string">"Aggregate with Id: &#123;0&#125; was not found"</span>, aggregateId));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> events;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>该方法返回聚合实例下的所有事件，如果没有，则意味着该聚合实例不存在。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Save</span>(<span class="params">AggregateRoot aggregate</span>)</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">var</span> uncommittedChanges = aggregate.GetUncommittedChanges();</div><div class="line">    <span class="keyword">var</span> version = aggregate.Version;</div><div class="line">    </div><div class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> @<span class="keyword">event</span> <span class="keyword">in</span> uncommittedChanges)</div><div class="line">    &#123;</div><div class="line">        version++;</div><div class="line">        <span class="keyword">if</span> (version &gt; <span class="number">2</span>)</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span> (version % <span class="number">3</span> == <span class="number">0</span>)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">var</span> originator = (IOriginator)aggregate;</div><div class="line">                <span class="keyword">var</span> memento = originator.GetMemento();</div><div class="line">                memento.Version = version;</div><div class="line">                SaveMemento(memento);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        @<span class="keyword">event</span>.Version=version;</div><div class="line">        _events.Add(@<span class="keyword">event</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> @<span class="keyword">event</span> <span class="keyword">in</span> uncommittedChanges)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">var</span> desEvent = Converter.ChangeTo(@<span class="keyword">event</span>, @<span class="keyword">event</span>.GetType());</div><div class="line">        _eventBus.Publish(desEvent);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>该方法负责将事件存储到内存中，另外，每执行三个事件存储操作就会产生一个对应聚合实例的快照。该快照实例包含了聚合的所有状态和版本信息。通过使用快照可以提高性能，因为这样做不需要把所有的发生过的事件都读取出来，只要处理最后三个就可以了。</p>
+<p>当所有的事件都被持久化以后，他们就通过Event Bus进行发布然后由外部Event Handler接收并处理。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> T GetMemento&lt;T&gt;(Guid aggregateId) <span class="keyword">where</span> T : BaseMemento</div><div class="line">&#123;</div><div class="line">    <span class="keyword">var</span> memento = _mementos.Where(m =&gt; m.Id == aggregateId).Select(m=&gt;m).LastOrDefault();</div><div class="line">    <span class="keyword">if</span> (memento != <span class="literal">null</span>)</div><div class="line">        <span class="keyword">return</span> (T) memento;</div><div class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>返回聚合的快照。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SaveMemento</span>(<span class="params">BaseMemento memento</span>)</span></div><div class="line">&#123;</div><div class="line">    _mementos.Add(memento);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>将聚合转存为快照。</p>
+<h3 id="Aggregate-Root（聚合根）"><a href="#Aggregate-Root（聚合根）" class="headerlink" title="Aggregate Root（聚合根）"></a>Aggregate Root（聚合根）</h3><p><strong>AggregateRoot</strong>类是所有聚合的基类。该类继承并实现了<strong>IEventProvider</strong>接口。他内部保存着所有未被提交的事件列表。它同时还带有ApplyChange方法用来调用对应的内部事件处理器。<strong>LoadsFromHistory</strong>方法用来加载并应用内部领域事件产生的状态变化。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title">AggregateRoot</span>:<span class="title">IEventProvider</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> List&lt;Event&gt; _changes;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> Guid Id &#123; <span class="keyword">get</span>; <span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Version &#123; <span class="keyword">get</span>; <span class="keyword">internal</span> <span class="keyword">set</span>; &#125;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> EventVersion &#123; <span class="keyword">get</span>; <span class="keyword">protected</span> <span class="keyword">set</span>; &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">AggregateRoot</span>(<span class="params"></span>)</span></div><div class="line">    &#123;</div><div class="line">        _changes = <span class="keyword">new</span> List&lt;Event&gt;();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> IEnumerable&lt;Event&gt; <span class="title">GetUncommittedChanges</span>(<span class="params"></span>)</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span> _changes;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">MarkChangesAsCommitted</span>(<span class="params"></span>)</span></div><div class="line">    &#123;</div><div class="line">        _changes.Clear();</div><div class="line">    &#125;</div><div class="line"> </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">LoadsFromHistory</span>(<span class="params">IEnumerable&lt;Event&gt; history</span>)</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> e <span class="keyword">in</span> history) ApplyChange(e, <span class="literal">false</span>);</div><div class="line">        Version = history.Last().Version;</div><div class="line">        EventVersion = Version;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">ApplyChange</span>(<span class="params">Event @<span class="keyword">event</span></span>)</span></div><div class="line">    &#123;</div><div class="line">        ApplyChange(@<span class="keyword">event</span>, <span class="literal">true</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ApplyChange</span>(<span class="params">Event @<span class="keyword">event</span>, <span class="keyword">bool</span> isNew</span>)</span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">dynamic</span> d = <span class="keyword">this</span>;</div><div class="line">        </div><div class="line">        d.Handle(Converter.ChangeTo(@<span class="keyword">event</span>,@<span class="keyword">event</span>.GetType()));</div><div class="line">        <span class="keyword">if</span> (isNew)</div><div class="line">        &#123;</div><div class="line">            _changes.Add(@<span class="keyword">event</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;      </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="EventBus（事件总线）"><a href="#EventBus（事件总线）" class="headerlink" title="EventBus（事件总线）"></a>EventBus（事件总线）</h3><p>事件表述了系统内的状态变化。事件产生的主要目的之一就是更新读取模型。为了实现这一点我创建了<strong>EventBus</strong>类。该类的唯一职责就是将事件发布到subscribers（订阅者）那里。一个单一事件可以被发布到多个订阅者手中。不过在本例中，我们还用不到手工订阅（针对某些事件做某些特殊处理）。Event handler factory（事件处理器工厂）会返回一个<strong>EventHanlder</strong>的列表来处理当前事件。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">EventBus</span>:<span class="title">IEventBus</span></div><div class="line">&#123;</div><div class="line">    <span class="keyword">private</span> IEventHandlerFactory _eventHandlerFactory;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">EventBus</span>(<span class="params">IEventHandlerFactory eventHandlerFactory</span>)</span></div><div class="line">    &#123;</div><div class="line">        _eventHandlerFactory = eventHandlerFactory;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> Publish&lt;T&gt;(T @<span class="keyword">event</span>) <span class="keyword">where</span> T : Event</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">var</span> handlers = _eventHandlerFactory.GetHandlers&lt;T&gt;();</div><div class="line">        <span class="keyword">foreach</span> (<span class="keyword">var</span> eventHandler <span class="keyword">in</span> handlers)</div><div class="line">        &#123;</div><div class="line">            eventHandler.Handle(@<span class="keyword">event</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Event-Handlers（事件处理器）"><a href="#Event-Handlers（事件处理器）" class="headerlink" title="Event Handlers（事件处理器）"></a>Event Handlers（事件处理器）</h3><p>事件处理器的主要目的是接收事件消息并更新读取模型。在下面的例子中，你可以看到一个<strong>ItemCreatedEventHandler</strong>类。它负责处理<strong>ItemCreatedEvent</strong>事件。通过读取事件内保存的信息，它创建了一个新的对象并将其存入展示数据库中。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">public class ItemCreatedEventHandler : IEventHandler&lt;ItemCreatedEvent&gt;</div><div class="line">&#123;</div><div class="line">    private readonly IReportDatabase _reportDatabase;</div><div class="line">    public ItemCreatedEventHandler(IReportDatabase reportDatabase)</div><div class="line">    &#123;</div><div class="line">        _reportDatabase = reportDatabase;</div><div class="line">    &#125;</div><div class="line">    public void Handle(ItemCreatedEvent handle)</div><div class="line">    &#123;</div><div class="line">        DiaryItemDto item = new DiaryItemDto()</div><div class="line">            &#123;</div><div class="line">                Id = handle.AggregateId,</div><div class="line">                Description =  handle.Description,</div><div class="line">                From = handle.From,</div><div class="line">                Title = handle.Title,</div><div class="line">                To=handle.To,</div><div class="line">                Version =  handle.Version</div><div class="line">            &#125;;</div><div class="line"></div><div class="line">        _reportDatabase.Add(item);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Diary-CQRS-Web"><a href="#Diary-CQRS-Web" class="headerlink" title="Diary.CQRS.Web"></a>Diary.CQRS.Web</h2><p>该项目是本CQRS示例的用户交互平台。这个Web项目是一个标准的ASP.NET MVC4应用，里面仅包含一个控制器<strong>HomeController</strong>和六个<strong>ActionResult</strong>方法：</p>
+<ul>
+<li><strong>ActionResult Index()</strong> - 该方法将返回Index视图，Index视图作为应用的主界面以列表的形式呈现所有日志内容。</li>
+<li><strong>ActionResult Delete(Guid id)</strong> - 该方法创建了一个新的<strong>DeleteItemCommand</strong>命令消息实例并将其发布至<strong>CommandBus</strong>。当命令发送成功后，将返回Index视图。</li>
+<li><strong>ActionResult Add()</strong> - 返回添加视图，你可以在该视图上输入新的日志内容。</li>
+<li><strong>ActionResult Add(DiaryItemDto item)</strong> - 该方法创建了一个新的<strong>CreateItemCommand</strong>命令消息实例并将其发布至<strong>CommandBus</strong>。当日志创建成功后，将返回Index视图。</li>
+<li><strong>ActionResult Edit(Guid id)</strong> - 返回选定日志项的编辑视图。</li>
+<li><strong>ActionResult Edit(DiaryItemDto item)</strong> - 该方法创建了一个新的<strong>ChangeItemCommand</strong>命令消息实例并将其发布至<strong>CommandBus</strong>。当日志更新成功后，将返回Index视图。当ConcurrencyError（并发错误）发生时，页面上将显示被抛出的异常信息。</li>
+</ul>
+<p>下图即为展示日志列表的主界面。</p>
+<p><img src="http://www.codeproject.com/KB/architecture/555855/main.jpg" alt=""></p>
+<h1 id="何时应该采用CQRS"><a href="#何时应该采用CQRS" class="headerlink" title="何时应该采用CQRS"></a>何时应该采用CQRS</h1><p>总的来说，CQRS模式的应用会让在你应对需要处理需要高度协作以及大型，多用户，高复杂度，包含不断变更的业余规则，还有业务优先的系统中体验到巨大的价值。另外，当你需要实现追踪和记录历史数据功能时它会显得特别有用。</p>
+<p>通过CQRS，你可以做到让读写性能飞速提升。而且系统原生就支持了scaling out（横向扩展）。通过将读和写的操作分开，你可以针对任意一方面进行优化。</p>
+<p>当你需要面对非常困难的业务逻辑时，CQRS模式就会显得非常有用。CQRS会强制性地避免你将领域逻辑和基础架构的操作进行混淆。</p>
+<p>通过应用CQRS模式，你可以在定义好通信接口以后，将开发工作分开交付给不同的团队进行实施。</p>
+<h1 id="何时不应该采用CQRS"><a href="#何时不应该采用CQRS" class="headerlink" title="何时不应该采用CQRS"></a>何时不应该采用CQRS</h1><p>如果你所开发的项目不需要进行高度地协作，就是指你不需要将同一个系列的数据操作拆分给多个人来写代码的话，那就不应该使用CQRS。</p>
+<p>全文翻译完毕 by 止觀。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/translation/" rel="tag">#translation</a>
+          
+            <a href="/tags/DDD/" rel="tag">#DDD</a>
+          
+            <a href="/tags/CQRS/" rel="tag">#CQRS</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2012/10/19/angularjs-introduction/" rel="next" title="AngularJS 介绍">
+                <i class="fa fa-chevron-left"></i> AngularJS 介绍
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/03/04/2014-3-4-html5-file-api/" rel="prev" title="HTML5 File api 实现断点续传">
+                HTML5 File api 实现断点续传 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2013/05/22/2013-5-22-CQRS-Introduction/"
+           data-title="CQRS介绍" data-url="http://blog.dongderu.net/2013/05/22/2013-5-22-CQRS-Introduction/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Fermin Yang" />
+          <p class="site-author-name" itemprop="name">Fermin Yang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CQRS是什么？"><span class="nav-number">1.</span> <span class="nav-text">CQRS是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Query-side（查询端）"><span class="nav-number">1.1.</span> <span class="nav-text">Query side（查询端）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Command-Side（命令端）"><span class="nav-number">1.2.</span> <span class="nav-text">Command Side（命令端）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Internal-Events（内部事件）"><span class="nav-number">1.3.</span> <span class="nav-text">Internal Events（内部事件）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Domain-Behavior（领域方法）"><span class="nav-number">1.3.1.</span> <span class="nav-text">Domain Behavior（领域方法）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Domain-Event（领域事件）"><span class="nav-number">1.3.2.</span> <span class="nav-text">Domain Event（领域事件）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Internal-Domain-Event-Handler（内部领域事件执行器）"><span class="nav-number">1.3.3.</span> <span class="nav-text">Internal Domain Event Handler（内部领域事件执行器）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#External-Events（外部事件）"><span class="nav-number">1.4.</span> <span class="nav-text">External Events（外部事件）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#示例代码说明"><span class="nav-number">2.</span> <span class="nav-text">示例代码说明</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Diary-CQRS"><span class="nav-number">2.1.</span> <span class="nav-text">Diary.CQRS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Repository（仓储）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Repository（仓储）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InMemoryEventStorage（事件存储【保存在内存中】）"><span class="nav-number">2.1.2.</span> <span class="nav-text">InMemoryEventStorage（事件存储【保存在内存中】）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Aggregate-Root（聚合根）"><span class="nav-number">2.1.3.</span> <span class="nav-text">Aggregate Root（聚合根）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EventBus（事件总线）"><span class="nav-number">2.1.4.</span> <span class="nav-text">EventBus（事件总线）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Event-Handlers（事件处理器）"><span class="nav-number">2.1.5.</span> <span class="nav-text">Event Handlers（事件处理器）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Diary-CQRS-Web"><span class="nav-number">2.2.</span> <span class="nav-text">Diary.CQRS.Web</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#何时应该采用CQRS"><span class="nav-number">3.</span> <span class="nav-text">何时应该采用CQRS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#何时不应该采用CQRS"><span class="nav-number">4.</span> <span class="nav-text">何时不应该采用CQRS</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fermin Yang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ferminyang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

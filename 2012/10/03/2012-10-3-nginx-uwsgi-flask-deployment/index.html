@@ -1,0 +1,687 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,nginx,flask," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="止觀" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="1. 安装Nginx详细步骤请戳。
+2. 安装uWSGIpip install uWSGI
+3. 运行uWSGI根据Flask文档里写的配置是可以运行的，但是有不少缺陷。
+
+1.如果你用virtualenv，需要指定python 的home目录；
+2.Nginx由于权限问题无法读取/tmp/uwsgi.sock文件。
+
+那么上面的命令可以改成：
+uwsgi -s /tmp/uwsgi.sock -">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过Nginx+uWSGI部署Flask应用">
+<meta property="og:url" content="http://blog.dongderu.net/2012/10/03/2012-10-3-nginx-uwsgi-flask-deployment/index.html">
+<meta property="og:site_name" content="止觀">
+<meta property="og:description" content="1. 安装Nginx详细步骤请戳。
+2. 安装uWSGIpip install uWSGI
+3. 运行uWSGI根据Flask文档里写的配置是可以运行的，但是有不少缺陷。
+
+1.如果你用virtualenv，需要指定python 的home目录；
+2.Nginx由于权限问题无法读取/tmp/uwsgi.sock文件。
+
+那么上面的命令可以改成：
+uwsgi -s /tmp/uwsgi.sock -">
+<meta property="og:updated_time" content="2016-11-15T08:45:08.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过Nginx+uWSGI部署Flask应用">
+<meta name="twitter:description" content="1. 安装Nginx详细步骤请戳。
+2. 安装uWSGIpip install uWSGI
+3. 运行uWSGI根据Flask文档里写的配置是可以运行的，但是有不少缺陷。
+
+1.如果你用virtualenv，需要指定python 的home目录；
+2.Nginx由于权限问题无法读取/tmp/uwsgi.sock文件。
+
+那么上面的命令可以改成：
+uwsgi -s /tmp/uwsgi.sock -">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.dongderu.net/2012/10/03/2012-10-3-nginx-uwsgi-flask-deployment/"/>
+
+  <title> 通过Nginx+uWSGI部署Flask应用 | 止觀 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">止觀</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                通过Nginx+uWSGI部署Flask应用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2012-10-03T14:50:00+00:00" content="2012-10-03">
+              2012-10-03
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/DevOps/" itemprop="url" rel="index">
+                    <span itemprop="name">DevOps</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2012/10/03/2012-10-3-nginx-uwsgi-flask-deployment/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2012/10/03/2012-10-3-nginx-uwsgi-flask-deployment/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="1-安装Nginx"><a href="#1-安装Nginx" class="headerlink" title="1. 安装Nginx"></a>1. 安装Nginx</h5><p>详细步骤请<a href="http://library.linode.com/web-servers/nginx/installation/debian-6-squeeze#sph_installing-nginx-from-debian-packages" target="_blank" rel="external">戳</a>。</p>
+<h5 id="2-安装uWSGI"><a href="#2-安装uWSGI" class="headerlink" title="2. 安装uWSGI"></a>2. 安装uWSGI</h5><pre><code>pip install uWSGI
+</code></pre><h5 id="3-运行uWSGI"><a href="#3-运行uWSGI" class="headerlink" title="3. 运行uWSGI"></a>3. 运行uWSGI</h5><p>根据<a href="http://flask.pocoo.org/docs/deploying/uwsgi/" target="_blank" rel="external">Flask文档</a>里写的配置是可以运行的，但是有不少缺陷。</p>
+<ul>
+<li>1.如果你用virtualenv，需要指定python 的home目录；</li>
+<li>2.Nginx由于权限问题无法读取/tmp/uwsgi.sock文件。</li>
+</ul>
+<p>那么上面的命令可以改成：</p>
+<pre><code>uwsgi -s /tmp/uwsgi.sock -w flask_file_name:app -H /path/to/virtual/env --chmod-socket 666
+</code></pre><h5 id="4-配置Nginx"><a href="#4-配置Nginx" class="headerlink" title="4. 配置Nginx"></a>4. 配置Nginx</h5><pre><code>server { 
+    listen 80; 
+    server_name myapp.com; 
+    root /path/to/flask/static; 
+    location / { 
+        include uwsgi_params; 
+        uwsgi_pass unix:/tmp/uwsgi.sock; 
+    } 
+}
+</code></pre><h5 id="5-安装supervisor"><a href="#5-安装supervisor" class="headerlink" title="5. 安装supervisor"></a>5. 安装supervisor</h5><pre><code>pip install supervisor
+</code></pre><h5 id="6-配置supervisor"><a href="#6-配置supervisor" class="headerlink" title="6. 配置supervisor"></a>6. 配置supervisor</h5><p>找到/etc/supervisord.conf,在文件末尾处添加如下内容：</p>
+<pre><code>[program:myapp] 
+command=/path/to/virtual/env/bin/uwsgi -s /tmp/uwsgi.sock -w flask_file_name:app -H /path/to/virtual/env --chmod-socket 666 
+directory=/path/to/app 
+autostart=true 
+autorestart=true 
+stdout_logfile=/path/to/app/logs/uwsgi.log 
+redirect_stderr=true 
+stopsignal=QUIT
+</code></pre><h5 id="7-管理uWSGI进程"><a href="#7-管理uWSGI进程" class="headerlink" title="7. 管理uWSGI进程"></a>7. 管理uWSGI进程</h5><p>执行supervisroctl可以进入管理控制台<br>如果希望重新加载uWSGI进程，你可以</p>
+<pre><code>supervisorctl reload myapp
+</code></pre><p>如果是重启的话，</p>
+<pre><code>supervisorctl restart myapp
+</code></pre><p>更多指令，请参考<a href="http://supervisord.org/index.html" target="_blank" rel="external">supervisor手册</a>，如果觉得烦，可以先<a href="http://chenxiaoyu.org/2011/05/31/python-supervisor.html" target="_blank" rel="external">这篇</a>中文介绍。</p>
+<p>本文转载自 <a href="http://blog.rebill.info/archives/deploying-Flask-application-with-nginx-uWSGI-and-Supervisor.html" target="_blank" rel="external">http://blog.rebill.info/archives/deploying-Flask-application-with-nginx-uWSGI-and-Supervisor.html</a>。有一些小的改动，不过尚未完全验证，待验证完毕后我会对有疑问或者是错误的地方进行更新的。欢迎各位留言。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag">#python</a>
+          
+            <a href="/tags/nginx/" rel="tag">#nginx</a>
+          
+            <a href="/tags/flask/" rel="tag">#flask</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2012/10/02/2012-10-2-wuxin-wusheng/" rel="next" title="無心無生">
+                <i class="fa fa-chevron-left"></i> 無心無生
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2012/10/03/2012-10-4-gevent-apache-flask-deployment/" rel="prev" title="通过Gevent+Apache(反向代理)部署Flask应用">
+                通过Gevent+Apache(反向代理)部署Flask应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2012/10/03/2012-10-3-nginx-uwsgi-flask-deployment/"
+           data-title="通过Nginx+uWSGI部署Flask应用" data-url="http://blog.dongderu.net/2012/10/03/2012-10-3-nginx-uwsgi-flask-deployment/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Fermin Yang" />
+          <p class="site-author-name" itemprop="name">Fermin Yang</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">35</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-安装Nginx"><span class="nav-number">1.</span> <span class="nav-text">1. 安装Nginx</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-安装uWSGI"><span class="nav-number">2.</span> <span class="nav-text">2. 安装uWSGI</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-运行uWSGI"><span class="nav-number">3.</span> <span class="nav-text">3. 运行uWSGI</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-配置Nginx"><span class="nav-number">4.</span> <span class="nav-text">4. 配置Nginx</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-安装supervisor"><span class="nav-number">5.</span> <span class="nav-text">5. 安装supervisor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-配置supervisor"><span class="nav-number">6.</span> <span class="nav-text">6. 配置supervisor</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-管理uWSGI进程"><span class="nav-number">7.</span> <span class="nav-text">7. 管理uWSGI进程</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Fermin Yang</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ferminyang"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
